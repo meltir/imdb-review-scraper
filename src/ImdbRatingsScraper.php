@@ -31,17 +31,18 @@
 
 namespace Meltir\ImdbRatingsScraper;
 
-use InvalidArgumentException;
+use Meltir\ImdbRatingsScraper\Interface\ImdbRatingItemInterface;
+use Meltir\ImdbRatingsScraper\Interface\ImdbRatingsScraperInterface;
 use Meltir\ImdbRatingsScraper\Exception\ImdbRatingsScraperException;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
-use Meltir\ImdbRatingsScraper\Interface\ImdbRatingItemInterface;
-use Meltir\ImdbRatingsScraper\Interface\ImdbRatingsScraperInterface;
 use Symfony\Component\DomCrawler\Crawler;
+use InvalidArgumentException;
 
 /**
  * IMDB user review scraper
  * Only uses publicly available information from non-protected user pages
+ *
  */
 class ImdbRatingsScraper implements ImdbRatingsScraperInterface
 {
@@ -108,6 +109,8 @@ class ImdbRatingsScraper implements ImdbRatingsScraperInterface
     }
 
     /**
+     * Fetch page via a http client and return out a web crawler that parsed it
+     *
      * @return Crawler
      * @throws ImdbRatingsScraperException
      */

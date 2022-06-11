@@ -2,11 +2,11 @@
 
 namespace Meltir\ImdbRatingsScraper\Interface;
 
-use GuzzleHttp\ClientInterface;
-use Meltir\ImdbRatingsScraper\Exception\ImdbRatingsScraperException;
 use Meltir\ImdbRatingsScraper\ImdbRatingItem;
 use Meltir\ImdbRatingsScraper\ImdbRatingsScraper;
+use Meltir\ImdbRatingsScraper\Exception\ImdbRatingsScraperException;
 use Symfony\Component\DomCrawler\Crawler;
+use GuzzleHttp\ClientInterface;
 
 /**
  * Interface for the review scraper
