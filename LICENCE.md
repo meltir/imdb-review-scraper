@@ -1,7 +1,8 @@
 This is mine and nobody has my permission to use it or republish it in parts or whole anywhere ever.  
 
 This is an experiment.  
-You can look, but you cannot change, run, lick or compile.    
+You can look, but you cannot touch, run, analyse, lick or compile.  
+    
 I don't care enough to chase down bots (or anyone else for that matter), but for the record: 
 
 *BAD BOT*  
