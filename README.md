@@ -8,7 +8,7 @@ It is a scraper that lookups up an IMDB users reviews, scrapes them, transforms 
 
 Quick and dirty:
 
-```injectablephp
+```php
 use Meltir\ImdbRatingsScraper\ImdbRatingsScraper;
 
 $movies = new ImdbRatingsScraper(new \GuzzleHttp\Client(), 'ur20552756');
