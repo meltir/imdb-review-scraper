@@ -35,6 +35,7 @@ use InvalidArgumentException;
 use Meltir\ImdbRatingsScraper\Exception\ImdbRatingsScraperException;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
+use Meltir\ImdbRatingsScraper\Interface\ImdbRatingItemInterface;
 use Meltir\ImdbRatingsScraper\Interface\ImdbRatingsScraperInterface;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -70,6 +71,22 @@ class ImdbRatingsScraper implements ImdbRatingsScraperInterface
     protected const IMDB_BASE_URI = 'https://www.imdb.com';
 
     /**
+     * Css selector to find the next page link
+     */
+    protected const FILTER_NEXT_PAGE = '#ratings-container > div.footer.filmosearch > div > div > a.flat-button.lister-page-next.next-page';
+
+    /**
+     * Css selector to find an individual movie rating
+     */
+    protected const FILTER_RATING_ITEM = 'div.ipl-rating-star.ipl-rating-star--other-user.small > span.ipl-rating-star__rating';
+
+    /**
+     * Css selector to find the ratings list
+     */
+    protected const FILTER_RATING_CONTAINER = '#ratings-container > div.lister-item';
+
+
+    /**
      * @param ClientInterface $client http client to use (guzzle)
      * @param string $user imdb user id
      */
@@ -97,37 +114,58 @@ class ImdbRatingsScraper implements ImdbRatingsScraperInterface
     protected function getUrl(): Crawler
     {
         try {
-            $response = $this->client->request('GET', $this->url);
-            return new Crawler($response->getBody()->getContents(), self::IMDB_BASE_URI);
+            return new Crawler(
+                $this
+                    ->client
+                    ->request('GET', $this->url)
+                    ->getBody()
+                    ->getContents(),
+                self::IMDB_BASE_URI);
         } catch (GuzzleException $e) {
-            throw new ImdbRatingsScraperException("Could not connect to imdb", ImdbRatingsScraperException::CODE_MAP['COULD_NOT_CONNECT'], $e);
+            throw new ImdbRatingsScraperException(
+                "Could not connect to imdb",
+                ImdbRatingsScraperException::CODE_MAP['COULD_NOT_CONNECT'],
+                $e
+            );
         } catch (InvalidArgumentException $e) {
-            throw new ImdbRatingsScraperException("Could not scrape page", ImdbRatingsScraperException::CODE_MAP['COULD_NOT_SCRAPE'], $e);
+            throw new ImdbRatingsScraperException(
+                "Could not scrape page",
+                ImdbRatingsScraperException::CODE_MAP['COULD_NOT_SCRAPE'],
+                $e
+            );
         }
     }
 
     /**
      * Process an individual entry
      *
-     * @param Crawler $item
+     * @param Crawler $item a movie and its rating
      * @return ImdbRatingItem
      * @throws ImdbRatingsScraperException
      */
-    protected function processItem(Crawler $item): ImdbRatingItem
+    protected function processItem(Crawler $item): ImdbRatingItemInterface
     {
         try {
-            $movie = new ImdbRatingItem();
             $link = $item->filter('h3 > a')->link()->getUri();
             try {
+                $movie = new ImdbRatingItem();
                 $movie->imdb_id = preg_replace('@.*title/(.*)/.*@', '\\1', $link);
                 $movie->reviewer = $this->user;
-                $movie->rating = (int) $item->filter('div.ipl-rating-star.ipl-rating-star--other-user.small > span.ipl-rating-star__rating')->text();
+                $movie->rating = (int) $item->filter(self::FILTER_RATING_ITEM)->text();
             } catch (InvalidArgumentException $e) {
-                throw new ImdbRatingsScraperException("Could not scrape this movie", ImdbRatingsScraperException::CODE_MAP['MOVIE_FAILED'], $e);
+                throw new ImdbRatingsScraperException(
+                    "Could not scrape this movie",
+                    ImdbRatingsScraperException::CODE_MAP['MOVIE_FAILED'],
+                    $e
+                );
             }
 
         } catch (InvalidArgumentException $e) {
-            throw new ImdbRatingsScraperException("No more movies on this list", ImdbRatingsScraperException::CODE_MAP['END_OF_PAGE'], $e);
+            throw new ImdbRatingsScraperException(
+                "No more movies on this list",
+                ImdbRatingsScraperException::CODE_MAP['END_OF_PAGE'],
+                $e
+            );
         }
 
         return $movie;
@@ -165,9 +203,13 @@ class ImdbRatingsScraper implements ImdbRatingsScraperInterface
     {
         $this->current_page = $this->getUrl();
         try {
-            $item = $this->current_page->filter('#ratings-container > div.lister-item');
+            $item = $this->current_page->filter(self::FILTER_RATING_CONTAINER);
         } catch (InvalidArgumentException $e) {
-            throw new ImdbRatingsScraperException('Could not find ratings on this page', ImdbRatingsScraperException::CODE_MAP['NO_RATINGS'], $e);
+            throw new ImdbRatingsScraperException(
+                'Could not find ratings on this page',
+                ImdbRatingsScraperException::CODE_MAP['NO_RATINGS'],
+                $e
+            );
         }
 
         $movies = [];
@@ -193,11 +235,11 @@ class ImdbRatingsScraper implements ImdbRatingsScraperInterface
     public function getNextPage(): string
     {
         try {
-            return $this->
-                current_page->
-                filter('#ratings-container > div.footer.filmosearch > div > div > a.flat-button.lister-page-next.next-page')->
-                link()->
-                getUri();
+            return $this
+                ->current_page
+                ->filter(self::FILTER_NEXT_PAGE)
+                ->link()
+                ->getUri();
         } catch (InvalidArgumentException $e) {
             throw new ImdbRatingsScraperException('Next page not found', ImdbRatingsScraperException::CODE_MAP['NO_NEXT_PAGE'], $e);
         }
