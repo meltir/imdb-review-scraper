@@ -4,6 +4,17 @@ This is an experiment/exercise in building a composer package, and setting it up
 
 It is a scraper that lookups up an IMDB users reviews, scrapes them, transforms them and spits them out as objects.  
 
+## Usage
+
+Quick and dirty:
+
+```injectablephp
+use Meltir\ImdbRatingsScraper\ImdbRatingsScraper;
+
+$movies = new ImdbRatingsScraper(new \GuzzleHttp\Client(), 'ur20552756');
+var_dump($movies->getMovies());
+```
+
 ## Licence
 
 ### Short version:
