@@ -2,17 +2,16 @@
 /**
  * Imdb scraper that looks up a users publicly available reviews and scrapes them - combining them with metadata from TMDB.
  *
- * @copyright (C) 2022 Lukasz Andrzejak <spam@meltir.com>
  *
  * Licence:
  * This is an experiment/exercise in building a composer package, and setting it up.
  * You can look, but you cannot touch, run, analyse, lick or compile.
  * I don't care enough to chase down bots (or anyone for that matter), but for the record: BAD BOT.
- * This is scraping publicly available pages movie id's and review values, and does not use descriptions/posters/other metadata from IMDB
+ * This is scraping publicly available page's movie id's and review values, and does not use descriptions/posters/other metadata from IMDB
  * Please don't sue me.
  *
  * If you want to do this, get the official, commercial (IMDB api)[https://developer.imdb.com/].
- * Consider this an unwholy closed half-MIT licence.
+ * Consider this an unholy closed half-MIT licence.
  *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
@@ -25,47 +24,68 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This product uses the TMDB API but is not endorsed or certified by TMDB.
- * @see https://www.themoviedb.org/documentation/api/terms-of-use
- *
  * @license this is mine and nobody has my permission to use it or republish it in parts or whole anywhere ever.
+ * @author Lukasz Andrzejak <spam@meltir.com>
+ * @copyright (C) 2022 Lukasz Andrzejak <spam@meltir.com>
  */
 
 namespace Meltir\ImdbRatingsScraper;
 
+use InvalidArgumentException;
+use Meltir\ImdbRatingsScraper\Exception\ImdbRatingsScraperException;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
-use Meltir\ImdbRatingsScraper\Exception\ImdbRatingsScraperException;
 use Meltir\ImdbRatingsScraper\Interface\ImdbRatingsScraperInterface;
 use Symfony\Component\DomCrawler\Crawler;
-use Tmdb\Client;
-use Tmdb\Token\Api\ApiToken;
 
+/**
+ * IMDB user review scraper
+ * Only uses publicly available information from non-protected user pages
+ */
 class ImdbRatingsScraper implements ImdbRatingsScraperInterface
 {
-    protected ClientInterface $client;
-
+    /**
+     * @var string url currently scraped
+     */
     protected string $url;
 
-    protected Client $tmdb;
-
+    /**
+     * @var Crawler page currently parsed
+     */
     protected Crawler $current_page;
 
+    /**
+     * Where the user profile lives on imdb
+     */
     protected const IMDB_RATINGS_URI_PREFIX = 'https://www.imdb.com/user/';
 
+    /**
+     * Where the user ratings live in a users profile
+     */
     protected const IMDB_RATINGS_URI_SUFFIX = '/ratings';
 
+    /**
+     * Where the base url is for parsing urls
+     */
     protected const IMDB_BASE_URI = 'https://www.imdb.com';
 
-    public function __construct(ClientInterface $client, int $user, Client $tmdb)
+    /**
+     * @param ClientInterface $client http client to use (guzzle)
+     * @param string $user imdb user id
+     */
+    public function __construct(protected ClientInterface $client, protected string $user)
     {
-        $this->client = $client;
-        $this->tmdb = $tmdb;
-        $user = 'ur'.$user;
-        $this->url = self::IMDB_RATINGS_URI_PREFIX.$user.self::IMDB_RATINGS_URI_SUFFIX;
+        $this->url = self::IMDB_RATINGS_URI_PREFIX . $user . self::IMDB_RATINGS_URI_SUFFIX;
     }
 
-    public function setUrl(string $url)
+    /**
+     * Set the url of the review page to be scanned.
+     * This is setup by default as the first page of a users reviews in the constructor
+     *
+     * @param string $url
+     * @return void
+     */
+    public function setUrl(string $url): void
     {
         $this->url = $url;
     }
@@ -80,63 +100,63 @@ class ImdbRatingsScraper implements ImdbRatingsScraperInterface
             $response = $this->client->request('GET', $this->url);
             return new Crawler($response->getBody()->getContents(), self::IMDB_BASE_URI);
         } catch (GuzzleException $e) {
-            throw new ImdbRatingsScraperException("Scraper error when fetching page", $e->getCode(), $e);
-        } catch (\InvalidArgumentException $e) {
-            throw new ImdbRatingsScraperException("Scraper error when parsing page", $e->getCode(), $e);
+            throw new ImdbRatingsScraperException("Could not connect to imdb", ImdbRatingsScraperException::CODE_MAP['COULD_NOT_CONNECT'], $e);
+        } catch (InvalidArgumentException $e) {
+            throw new ImdbRatingsScraperException("Could not scrape page", ImdbRatingsScraperException::CODE_MAP['COULD_NOT_SCRAPE'], $e);
         }
     }
 
     /**
      * Process an individual entry
      *
-     * @todo add cache - an optional repository/collection that can be checked against so the API's dont get hit as often
-     * @todo OOOOOO!!!!!! i should do a doctrine&eloquent connector, maybe a symfony&laravel plugins !
      * @param Crawler $item
      * @return ImdbRatingItem
-     * @throws \InvalidArgumentException
+     * @throws ImdbRatingsScraperException
      */
     protected function processItem(Crawler $item): ImdbRatingItem
     {
-        $movie = new ImdbRatingItem();
-        $link = $item->filter('h3 > a')->link()->getUri();
-        $imdb_id = preg_replace('@.*title/(.*)/.*@', '\\1', $link);
-        $results = $this->tmdb->getFindApi()->findBy($imdb_id, ['external_source' => 'imdb_id']);
-        $tmovie = $results['movie'][0];
-        var_dump($results);
-        die();
-        $movie->rating = (int) $item->filter('div.ipl-rating-star.ipl-rating-star--other-user.small > span.ipl-rating-star__rating')->text();
-        $movie->title = $tmovie['title'];
-        $movie->image = $tmovie['poster_path'];
-        $movie->year = $tmovie['release_date'];
-        $movie->body = $tmovie['overview'];
+        try {
+            $movie = new ImdbRatingItem();
+            $link = $item->filter('h3 > a')->link()->getUri();
+            try {
+                $movie->imdb_id = preg_replace('@.*title/(.*)/.*@', '\\1', $link);
+                $movie->reviewer = $this->user;
+                $movie->rating = (int) $item->filter('div.ipl-rating-star.ipl-rating-star--other-user.small > span.ipl-rating-star__rating')->text();
+            } catch (InvalidArgumentException $e) {
+                throw new ImdbRatingsScraperException("Could not scrape this movie", ImdbRatingsScraperException::CODE_MAP['MOVIE_FAILED'], $e);
+            }
 
-//        $movie->title = $item->filter('h3 > a')->text();
-//        $movie->image = $item->filter('img')->attr('loadlate');
-//        $movie->year = $item->filter('h3 > span.lister-item-year.text-muted.unbold')->text();
-//        $movie->body = $item->filter('p:nth-child(6)')->text();
+        } catch (InvalidArgumentException $e) {
+            throw new ImdbRatingsScraperException("No more movies on this list", ImdbRatingsScraperException::CODE_MAP['END_OF_PAGE'], $e);
+        }
+
         return $movie;
     }
 
     /**
-     * Whats the standard way of breaking up a task like this ?
-     * A queue !
+     * Get all movies from all pages. This can timeout !
      *
+     * @todo implement this as a queue
      * @return ImdbRatingItem[]
      * @throws ImdbRatingsScraperException
      */
     public function getAllMovies(): array
     {
         $movies = $this->getMovies();
-        $url = 'start';
-        while ($url = $this->getNextPage()) {
-            $this->setUrl($url);
-            $movies = array_merge($movies, $this->getMovies());
+        try {
+            while ($url = $this->getNextPage()) {
+                $this->setUrl($url);
+                $movies = array_merge($movies, $this->getMovies());
+            }
+        } catch (ImdbRatingsScraperException $e) {
+            if ($e->getCode() === ImdbRatingsScraperException::CODE_MAP['NO_NEXT_PAGE']) return $movies;
+            throw $e;
         }
         return $movies;
     }
 
     /**
-     * Process the whole ratings page
+     * Process a single page of reviews
      *
      * @return ImdbRatingItem[]
      * @throws ImdbRatingsScraperException
@@ -144,23 +164,31 @@ class ImdbRatingsScraper implements ImdbRatingsScraperInterface
     public function getMovies(): array
     {
         $this->current_page = $this->getUrl();
-        $item = $this->current_page->filter('#ratings-container > div.lister-item');
+        try {
+            $item = $this->current_page->filter('#ratings-container > div.lister-item');
+        } catch (InvalidArgumentException $e) {
+            throw new ImdbRatingsScraperException('Could not find ratings on this page', ImdbRatingsScraperException::CODE_MAP['NO_RATINGS'], $e);
+        }
+
         $movies = [];
         $last_item = false;
         while (!$last_item) {
             try {
                 $movies[] = $this->processItem($item);
                 $item = $item->nextAll();
-            } catch (\InvalidArgumentException $e) {
-                $last_item = true;
+            } catch (ImdbRatingsScraperException $e) {
+                if ($e->getCode() === ImdbRatingsScraperException::CODE_MAP['END_OF_PAGE']) $last_item = true;
+                else throw $e;
             }
         }
         return $movies;
     }
 
     /**
-     * Get the url of the next page, or empty string if not found
+     * Get the url of the next page, or exception if not found
+     *
      * @return string
+     * @throws ImdbRatingsScraperException
      */
     public function getNextPage(): string
     {
@@ -170,8 +198,8 @@ class ImdbRatingsScraper implements ImdbRatingsScraperInterface
                 filter('#ratings-container > div.footer.filmosearch > div > div > a.flat-button.lister-page-next.next-page')->
                 link()->
                 getUri();
-        } catch (\InvalidArgumentException $e) {
-            return '';
+        } catch (InvalidArgumentException $e) {
+            throw new ImdbRatingsScraperException('Next page not found', ImdbRatingsScraperException::CODE_MAP['NO_NEXT_PAGE'], $e);
         }
     }
 }

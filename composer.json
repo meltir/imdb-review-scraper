@@ -1,6 +1,6 @@
 {
     "name": "meltir/imdb-ratings-scraper",
-    "description": "Scrape an imdb users reviews and ratings from their public imdb profile. This product uses the TMDB API but is not endorsed or certified by TMDB.",
+    "description": "Scrape an imdb users reviews and ratings from their public imdb profile.",
     "type": "library",
     "license": "proprietary",
     "autoload": {
@@ -19,8 +19,6 @@
     "require": {
         "guzzlehttp/guzzle": "^7.4",
         "symfony/dom-crawler": "^6.1",
-        "symfony/css-selector": "^6.1",
-        "symfony/event-dispatcher": "^6.1",
-        "php-tmdb/api": "^4.0"
+        "symfony/css-selector": "^6.1"
     }
 }

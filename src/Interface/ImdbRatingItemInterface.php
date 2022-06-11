@@ -4,15 +4,15 @@ namespace Meltir\ImdbRatingsScraper\Interface;
 
 /**
  * Interface ImdbRatingItemInterface
- * @property string $body
- * @property string $title
- * @property string $year
- * @property string $rating
- * @property string $image
- * @property string $link
- * @package App\Meltir\Imdb
+ * @property string $imdb_id identifier
+ * @property int $rating user rating
+ * @property string $reviewer review author
  */
 interface ImdbRatingItemInterface
 {
-
+    /**
+     * Hook for decorators
+     * @return ImdbRatingItemInterface
+     */
+    public function format(): ImdbRatingItemInterface;
 }
