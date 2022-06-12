@@ -4,7 +4,7 @@ namespace Meltir\ImdbRatingsScraper\Exception;
 
 use Exception;
 
-class ImdbRatingsScraperException extends Exception
+class ScraperException extends Exception
 {
 
     /**

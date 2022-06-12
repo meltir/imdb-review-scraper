@@ -8,11 +8,11 @@ namespace Meltir\ImdbRatingsScraper\Interface;
  * @property int $rating user rating
  * @property string $reviewer review author
  */
-interface ImdbRatingItemInterface
+interface ItemInterface
 {
     /**
      * Hook for decorators
-     * @return ImdbRatingItemInterface
+     * @return ItemInterface
      */
-    public function format(): ImdbRatingItemInterface;
+    public function format(): ItemInterface;
 }

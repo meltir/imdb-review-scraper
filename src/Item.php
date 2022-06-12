@@ -2,12 +2,12 @@
 
 namespace Meltir\ImdbRatingsScraper;
 
-use Meltir\ImdbRatingsScraper\Interface\ImdbRatingItemInterface;
+use Meltir\ImdbRatingsScraper\Interface\ItemInterface;
 
 /**
  * @inheritDoc
  */
-class ImdbRatingItem implements ImdbRatingItemInterface
+class Item implements ItemInterface
 {
     public string $imdb_id;
 
@@ -15,7 +15,7 @@ class ImdbRatingItem implements ImdbRatingItemInterface
 
     public string $reviewer;
 
-    public function format(): ImdbRatingItemInterface
+    public function format(): ItemInterface
     {
         return $this;
     }

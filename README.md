@@ -9,9 +9,12 @@ It is a scraper that lookups up an IMDB users reviews, scrapes them, transforms 
 Quick and dirty:
 
 ```php
-use Meltir\ImdbRatingsScraper\ImdbRatingsScraper;
+<?php
 
-$movies = new ImdbRatingsScraper(new \GuzzleHttp\Client(), 'ur20552756');
+require 'vendor/autoload.php';
+
+use Meltir\ImdbRatingsScraper\Scraper;
+$movies = new Scraper(new \GuzzleHttp\Client(), 'ur20552756');
 var_dump($movies->getMovies());
 ```
 

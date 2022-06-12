@@ -2,17 +2,14 @@
 
 namespace Meltir\ImdbRatingsScraper\Interface;
 
-use Meltir\ImdbRatingsScraper\ImdbRatingItem;
-use Meltir\ImdbRatingsScraper\ImdbRatingsScraper;
-use Meltir\ImdbRatingsScraper\Exception\ImdbRatingsScraperException;
-use Symfony\Component\DomCrawler\Crawler;
+use Meltir\ImdbRatingsScraper\Exception\ScraperException;
 use GuzzleHttp\ClientInterface;
 
 /**
  * Interface for the review scraper
- * @see ImdbRatingsScraper
+ * @see Scraper
  */
-interface ImdbRatingsScraperInterface
+interface ScraperInterface
 {
 
     /**
@@ -35,16 +32,16 @@ interface ImdbRatingsScraperInterface
     /**
      * Get all movies from all pages. This can timeout !
      *
-     * @return ImdbRatingItemInterface[]
-     * @throws ImdbRatingsScraperException
+     * @return ItemInterface[]
+     * @throws ScraperException
      */
     public function getAllMovies(): array;
 
     /**
      * Process a single page of reviews
      *
-     * @return ImdbRatingItemInterface[]
-     * @throws ImdbRatingsScraperException
+     * @return ItemInterface[]
+     * @throws ScraperException
      */
     public function getMovies(): array;
 
@@ -52,7 +49,7 @@ interface ImdbRatingsScraperInterface
      * Get the url of the next page, or exception if not found
      *
      * @return string
-     * @throws ImdbRatingsScraperException
+     * @throws ScraperException
      */
     public function getNextPage(): string;
 
