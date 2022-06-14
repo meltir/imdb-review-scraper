@@ -14,6 +14,20 @@ use Meltir\ImdbRatingsScraper\Scraper;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
+
+/**
+ * @todo add failures and exceptions
+ * @todo refactor and clean up
+ * @todo add infection coverage
+ * @todo check other assertions related to request
+ * @todo do i need mocker here ? im not using it atm, maybe after i add the exceptions checks
+ * @todo add phpunit.xml
+ *
+ * run tests and container with
+ * docker run -ti -v `pwd`:/var/www/html --entrypoint /bin/sh scrapercontainer
+ */
+
+
 class ScraperTest extends TestCase
 {
 
@@ -26,6 +40,7 @@ class ScraperTest extends TestCase
      * Well, the below doesn't work with phpstorm
      * @var array{request: Request, response: Response, error: array, options: array}[]
      */
+//    #[ArrayShape(ARRAY_SHAPE_GUZZLE_HISTORY)]
     protected array $container;
 
     /**
@@ -33,6 +48,9 @@ class ScraperTest extends TestCase
      */
     private function getClient(): Client
     {
+        /**
+         * @todo find a nicer way to load the file
+         */
         $response = new Response(200, [], file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'imdb-response.html'));
         $this->container = [];
         $history = Middleware::history($this->container);
@@ -65,6 +83,8 @@ class ScraperTest extends TestCase
 
         $this->testGetMovies();
     }
+
+
 
     public function testSetUrl()
     {

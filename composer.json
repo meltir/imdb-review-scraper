@@ -5,7 +5,8 @@
     "license": "proprietary",
     "autoload": {
         "psr-4": {
-            "Meltir\\ImdbRatingsScraper\\": "src/"
+            "Meltir\\ImdbRatingsScraper\\": "src/",
+            "Meltir\\ImdbRatingsScraper\\Tests": "tests/"
         }
     },
     "authors": [
