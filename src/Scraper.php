@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Imdb scraper that looks up a users publicly available reviews and scrapes them.
  *
@@ -7,7 +8,8 @@
  * This is an experiment/exercise in building a composer package, and setting it up.
  * You can look, but you cannot touch, run, analyse, lick or compile.
  * I don't care enough to chase down bots (or anyone for that matter), but for the record: BAD BOT.
- * This is scraping publicly available page's movie id's and review values, and does not use descriptions/posters/other metadata from IMDB
+ * This is scraping publicly available page's movie id's and review values, and does not use
+ * descriptions/posters/other metadata from IMDB
  * Please don't sue me.
  *
  * If you want to do this, get the official, commercial (IMDB api)[https://developer.imdb.com/].
