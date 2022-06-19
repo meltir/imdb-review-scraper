@@ -1,0 +1,10 @@
+version: '3'
+services:
+  php:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    working_dir: /var/www/html
+    # if these are mounted you dont need to rebuild the image whenever you make a change to them
+    volumes:
+      - .:/var/www/html

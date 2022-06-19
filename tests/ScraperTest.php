@@ -1,6 +1,6 @@
 <?php
 
-namespace Meltir\ImdbRatingsScraper\test;
+namespace Meltir\ImdbRatingsScraper\Tests;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
@@ -43,18 +43,41 @@ class ScraperTest extends TestCase
 //    #[ArrayShape(ARRAY_SHAPE_GUZZLE_HISTORY)]
     protected array $container;
 
+    public function setUp(): void
+    {
+        $this->client = $this->getClient();
+        parent::setUp();
+    }
+
     /**
+     * Generate a single response to an imdb query, always the same one
+     * @return Response
+     */
+    private function getSingleResponse(): Response
+    {
+        return new Response(
+            status: 200,
+            headers: [],
+            body: file_get_contents(
+                filename: __DIR__ . DIRECTORY_SEPARATOR . 'imdb-response.html'
+            )
+        );
+    }
+
+    /**
+     * @param Response[]|null $responses
      * @return Client
      */
-    private function getClient(): Client
+    private function getClient(?array $responses = null): Client
     {
         /**
          * @todo find a nicer way to load the file
          */
-        $response = new Response(200, [], file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'imdb-response.html'));
+        if (is_null($responses)) $responses = [$this->getSingleResponse()];
         $this->container = [];
         $history = Middleware::history($this->container);
-        $mock = new MockHandler([$response]);
+        var_dump($responses);
+        $mock = new MockHandler($responses);
         $handlerStack = HandlerStack::create($mock);
         $this->mock = $mock;
         $handlerStack->push($history);
@@ -64,15 +87,8 @@ class ScraperTest extends TestCase
         ]);
     }
 
-    public function setUp(): void
-    {
-
-        parent::setUp();
-    }
-
     public function testGetNextPage()
     {
-        $this->client = $this->getClient();
         $scraper = new Scraper($this->client, 'foobar');
         $scraper->getMovies();
         $this->assertEquals('https://www.imdb.com/NEXTPAGE', $scraper->getNextPage());
@@ -80,15 +96,16 @@ class ScraperTest extends TestCase
 
     public function testGetAllMovies()
     {
-
-        $this->testGetMovies();
+        $response = $this->getSingleResponse();
+        $client = $this->getClient([$response,$response]);
+        $scraper = new Scraper($client, 'foobar');
+        $this->assertEquals([], $scraper->getAllMovies());
     }
 
 
 
     public function testSetUrl()
     {
-        $this->client = $this->getClient();
         $user = 'foobar';
         $scraper = new Scraper($this->client, $user);
         $scraper->setUrl('foobar');
@@ -100,7 +117,6 @@ class ScraperTest extends TestCase
 
     public function testGetMovies()
     {
-        $this->client = $this->getClient();
         $user = 'foobar';
         $scraper = new Scraper($this->client, $user);
         $movie1 = new Item();
