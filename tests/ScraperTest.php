@@ -21,7 +21,9 @@ use PHPUnit\Framework\TestCase;
  * @todo add infection coverage
  * @todo check other assertions related to request
  * @todo do i need mocker here ? im not using it atm, maybe after i add the exceptions checks
- * @todo add phpunit.xml
+ * @todo split this out into two classes success/failure and catch exceptions in failures
+ * @todo add composer command to generate phpdoc in md and upload to github project wiki
+ * @todo
  *
  * run tests and container with
  * docker run -ti -v `pwd`:/var/www/html --entrypoint /bin/sh scrapercontainer
