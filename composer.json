@@ -21,8 +21,14 @@
         }
     ],
     "scripts": {
-        "test": [ "./vendor/bin/phpunit" ],
-        "infection": [ "./vendor/bin/infection" ]
+        "test": [
+            "Composer\\Config::disableProcessTimeout",
+            "./vendor/bin/phpunit"
+        ],
+        "infection-auto": [
+            "Composer\\Config::disableProcessTimeout",
+            "./vendor/bin/infection.phar --logger-github --ignore-msi-with-no-mutations --only-covered --min-msi=46 --min-covered-msi=46"
+        ]
     },
     "minimum-stability": "stable",
     "require": {
@@ -33,6 +39,7 @@
         "symfony/css-selector": "^6.1"
     },
     "require-dev": {
+        "ext-intl": "*",
         "phpunit/phpunit": "^9",
         "mockery/mockery": "^1.5",
         "infection/infection": "^0.26.11",
