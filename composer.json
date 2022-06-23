@@ -27,7 +27,7 @@
         ],
         "infection-auto": [
             "Composer\\Config::disableProcessTimeout",
-            "./vendor/bin/infection.phar --ignore-msi-with-no-mutations --only-covered --min-msi=46 --min-covered-msi=46"
+            "./vendor/bin/infection --ignore-msi-with-no-mutations --only-covered --min-msi=46 --min-covered-msi=46"
         ]
     },
     "minimum-stability": "stable",
