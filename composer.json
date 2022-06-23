@@ -5,7 +5,12 @@
     "license": "proprietary",
     "autoload": {
         "psr-4": {
-            "Meltir\\ImdbRatingsScraper\\": "src/"
+            "Meltir\\ImdbRatingsScraper\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Meltir\\ImdbRatingsScraper\\Tests\\": "tests"
         }
     },
     "authors": [
@@ -15,12 +20,34 @@
             "homepage": "https://www.meltir.com"
         }
     ],
+    "scripts": {
+        "test": [
+            "Composer\\Config::disableProcessTimeout",
+            "./vendor/bin/phpunit"
+        ],
+        "infection-auto": [
+            "Composer\\Config::disableProcessTimeout",
+            "./vendor/bin/infection --ignore-msi-with-no-mutations --only-covered --min-msi=46 --min-covered-msi=46"
+        ]
+    },
     "minimum-stability": "stable",
     "require": {
+        "ext-curl": "*",
         "php": "8.1.*",
         "guzzlehttp/guzzle": "^7.4",
         "symfony/dom-crawler": "^6.1",
         "symfony/css-selector": "^6.1"
+    },
+    "require-dev": {
+        "ext-intl": "*",
+        "phpunit/phpunit": "^9",
+        "mockery/mockery": "^1.5",
+        "infection/infection": "^0.26.11",
+        "squizlabs/php_codesniffer": "^3.7",
+        "phpmd/phpmd": "^2.12",
+        "friendsofphp/php-cs-fixer": "^3.8",
+        "phpstan/phpstan": "^1.7",
+        "vimeo/psalm": "^4.23"
     },
     "config": {
         "allow-plugins": {
