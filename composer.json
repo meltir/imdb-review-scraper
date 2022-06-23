@@ -17,9 +17,14 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "php": "8.1",
+        "php": "8.1.*",
         "guzzlehttp/guzzle": "^7.4",
         "symfony/dom-crawler": "^6.1",
         "symfony/css-selector": "^6.1"
+    },
+    "config": {
+        "allow-plugins": {
+            "infection/extension-installer": true
+        }
     }
 }
