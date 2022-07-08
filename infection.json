@@ -6,7 +6,7 @@
         ]
     },
     "logs": {
-        "text": "storage"
+        "text": "infection.log"
     },
     "mutators": {
         "@default": true

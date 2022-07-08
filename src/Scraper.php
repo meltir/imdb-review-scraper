@@ -131,14 +131,8 @@ class Scraper implements ScraperInterface
                 uri: self::IMDB_BASE_URI);
         } catch (GuzzleException $e) {
             throw new ScraperException(
-                message: "Could not connect to imdb",
-                code: ScraperException::CODE_MAP['COULD_NOT_CONNECT'],
-                previous: $e
-            );
-        } catch (InvalidArgumentException $e) {
-            throw new ScraperException(
-                message: "Could not scrape page",
-                code: ScraperException::CODE_MAP['COULD_NOT_SCRAPE'],
+                message:  "Could not connect to imdb",
+                code:     ScraperException::CODE_MAP['COULD_NOT_CONNECT'],
                 previous: $e
             );
         }
@@ -162,16 +156,16 @@ class Scraper implements ScraperInterface
                 $movie->rating = (int) $item->filter(self::FILTER_RATING_ITEM)->text();
             } catch (InvalidArgumentException $e) {
                 throw new ScraperException(
-                    message: "Could not scrape this movie",
-                    code: ScraperException::CODE_MAP['MOVIE_FAILED'],
+                    message:  "Could not scrape this movie",
+                    code:     ScraperException::CODE_MAP['MOVIE_FAILED'],
                     previous: $e
                 );
             }
 
         } catch (InvalidArgumentException $e) {
             throw new ScraperException(
-                message: "No more movies on this list",
-                code: ScraperException::CODE_MAP['END_OF_PAGE'],
+                message:  "No more movies on this list",
+                code:     ScraperException::CODE_MAP['END_OF_PAGE'],
                 previous: $e
             );
         }
@@ -214,8 +208,8 @@ class Scraper implements ScraperInterface
             $item = $this->current_page->filter(self::FILTER_RATING_CONTAINER);
         } catch (InvalidArgumentException $e) {
             throw new ScraperException(
-                message: 'Could not find ratings on this page',
-                code: ScraperException::CODE_MAP['NO_RATINGS'],
+                message:  'Could not find ratings on this page',
+                code:     ScraperException::CODE_MAP['NO_RATINGS'],
                 previous: $e
             );
         }

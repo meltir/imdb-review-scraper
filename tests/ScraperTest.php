@@ -4,11 +4,14 @@ namespace Meltir\ImdbRatingsScraper\Tests;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Request;
+use Meltir\ImdbRatingsScraper\Exception\ScraperException;
 use Meltir\ImdbRatingsScraper\Item;
 use Meltir\ImdbRatingsScraper\Scraper;
 use Mockery;
@@ -58,9 +61,9 @@ class ScraperTest extends TestCase
     private function getSingleResponse(): Response
     {
         return new Response(
-            status: 200,
+            status:  200,
             headers: [],
-            body: file_get_contents(
+            body:    file_get_contents(
                 filename: __DIR__ . DIRECTORY_SEPARATOR . 'imdb-response.html'
             )
         );
@@ -97,11 +100,39 @@ class ScraperTest extends TestCase
 
     public function testGetAllMovies()
     {
-        $this->markTestSkipped('I just need this to pass to make sure the workflow is ok');
-        $response = $this->getSingleResponse();
-        $client = $this->getClient([$response,$response]);
-        $scraper = new Scraper($client, 'foobar');
-        $this->assertEquals([], $scraper->getAllMovies());
+        $r1 = new Response(
+            status:  200,
+            headers: [],
+            body:    file_get_contents(
+                filename: __DIR__ . DIRECTORY_SEPARATOR . 'imdb-response.html'
+            ));
+        $r2 = new Response(
+            status:  200,
+            headers: [],
+            body:    file_get_contents(
+                filename: __DIR__ . DIRECTORY_SEPARATOR . 'imdb-response-last.html'
+            ));
+        $user = 'foobar';
+        $movie1 = new Item();
+        $movie1->imdb_id = 'tt2435850';
+        $movie1->reviewer = $user;
+        $movie1->rating = 7;
+        $movie2 = new Item();
+        $movie2->imdb_id = 'tt0251282';
+        $movie2->reviewer = $user;
+        $movie2->rating = 8;
+        $movie3 = new Item();
+        $movie3->imdb_id = 'tt2435850';
+        $movie3->reviewer = $user;
+        $movie3->rating = 7;
+        $movie4 = new Item();
+        $movie4->imdb_id = 'tt0251282';
+        $movie4->reviewer = $user;
+        $movie4->rating = 8;
+
+        $client = $this->getClient([$r1, $r2]);
+        $scraper = new Scraper($client, $user);
+        $this->assertEquals([$movie1, $movie2, $movie3, $movie4], $scraper->getAllMovies());
     }
 
 
@@ -130,6 +161,38 @@ class ScraperTest extends TestCase
         $movie2->reviewer = $user;
         $movie2->rating = 8;
         $this->assertEquals([$movie1, $movie2], $scraper->getMovies());
+    }
+
+    public function testConstructor()
+    {
+        $scraper = new Scraper($this->client, 'foobar');
+        $scraper->getMovies();
+        /** @var Request $request */
+        $request = $this->container[0]['request'];
+        $this->assertEquals('https://www.imdb.com/user/foobar/ratings', (string) $request->getUri());
+    }
+
+    public function testGuzzleException()
+    {
+        $client = Mockery::mock(Client::class);
+        $client->expects('request')->andThrow(new RequestException('Boom no connect !', new Request('GET','test')));
+        $this->expectException(ScraperException::class);
+        $this->expectExceptionCode(ScraperException::CODE_MAP['COULD_NOT_CONNECT']);
+        $this->expectExceptionMessage('Could not connect to imdb');
+        $scraper = new Scraper($client, 'foobar');
+        $scraper->getMovies();
+    }
+
+    public function testCrawlerException()
+    {
+        $r1 = new Response(
+            status:  200,
+            headers: [],
+            body:    "BAD_HTML");
+        $client = $this->getClient([$r1]);
+        $scraper = new Scraper($client, 'foobar');
+        $x = $scraper->getMovies();
+        $this->assertEquals(1,2);
     }
 
 }
