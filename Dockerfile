@@ -21,6 +21,10 @@ RUN apk add icu-dev icu \
     && apk del icu-dev
 
 
+RUN mkdir -p /root/.composer/vendor/bin/ \
+    && wget https://github.com/infection/infection/releases/download/0.26.13/infection.phar -O /root/.composer/vendor/bin/infection.phar \
+    && chmod +x /root/.composer/vendor/bin/infection.phar
+
 WORKDIR /var/www/html
 
 COPY . .
