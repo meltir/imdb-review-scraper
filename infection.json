@@ -11,10 +11,5 @@
     "mutators": {
         "@default": true,
         "@unwrap": false
-    },
-    "timeout": 60,
-    "phpUnit": {
-        "configDir": ".",
-        "customPath": ".\/vendor\/bin\/phpunit"
     }
 }
