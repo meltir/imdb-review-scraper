@@ -129,10 +129,14 @@ class ScraperTest extends TestCase
         $movie4->imdb_id = 'tt0251282';
         $movie4->reviewer = $user;
         $movie4->rating = 8;
-
+        // test that the correct urls are being called
         $client = $this->getClient([$r1, $r2]);
         $scraper = new Scraper($client, $user);
         $this->assertEquals([$movie1, $movie2, $movie3, $movie4], $scraper->getAllMovies());
+        $request = $this->container[0]['request'];
+        $this->assertEquals('https://www.imdb.com/user/foobar/ratings', (string) $request->getUri());
+        $request = $this->container[1]['request'];
+        $this->assertEquals('https://www.imdb.com/NEXTPAGE', (string) $request->getUri());
     }
 
 
@@ -172,6 +176,23 @@ class ScraperTest extends TestCase
         $this->assertEquals('https://www.imdb.com/user/foobar/ratings', (string) $request->getUri());
     }
 
+    public function testCrawlerException()
+    {
+        $request = new Response(
+            status:  200,
+            headers: [],
+            body:    file_get_contents(
+                filename: __DIR__ . DIRECTORY_SEPARATOR . 'imdb-response-broken.html'
+            ));
+        $client = $this->getClient([$request]);
+        $scraper = new Scraper($client, 'foobar');
+        $this->expectException(ScraperException::class);
+        $this->expectExceptionCode(ScraperException::CODE_MAP['MOVIE_FAILED']);
+        $this->expectExceptionMessage('Could not scrape this movie');
+        $x = $scraper->getMovies();
+//        $this->assertEquals(1,2);
+    }
+
     public function testGuzzleException()
     {
         $client = Mockery::mock(Client::class);
@@ -181,18 +202,6 @@ class ScraperTest extends TestCase
         $this->expectExceptionMessage('Could not connect to imdb');
         $scraper = new Scraper($client, 'foobar');
         $scraper->getMovies();
-    }
-
-    public function testCrawlerException()
-    {
-        $r1 = new Response(
-            status:  200,
-            headers: [],
-            body:    "BAD_HTML");
-        $client = $this->getClient([$r1]);
-        $scraper = new Scraper($client, 'foobar');
-        $x = $scraper->getMovies();
-        $this->assertEquals(1,2);
     }
 
 }

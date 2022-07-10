@@ -9,6 +9,12 @@
         "text": "infection.log"
     },
     "mutators": {
-        "@default": true
+        "@default": true,
+        "@unwrap": false
+    },
+    "timeout": 60,
+    "phpUnit": {
+        "configDir": ".",
+        "customPath": ".\/vendor\/bin\/phpunit"
     }
 }

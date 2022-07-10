@@ -91,6 +91,11 @@ class Scraper implements ScraperInterface
     protected const FILTER_RATING_CONTAINER = /** @lang CSS */
         '#ratings-container > div.lister-item';
 
+    protected const FILTER_RATING_LINK = /** @lang CSS */
+        'h3 > a';
+
+    protected const REGEX_TITLE = /** @lang RegExp */
+        '@.*title/(.*)/.*@';
 
     /**
      * @param ClientInterface $client http client to use (guzzle)
@@ -119,7 +124,7 @@ class Scraper implements ScraperInterface
      * @return Crawler
      * @throws ScraperException
      */
-    protected function getUrl(): Crawler
+    private function getUrl(): Crawler
     {
         try {
             return new Crawler(
@@ -145,13 +150,13 @@ class Scraper implements ScraperInterface
      * @return Item
      * @throws ScraperException
      */
-    protected function processItem(Crawler $item): ItemInterface
+    private function processItem(Crawler $item): ItemInterface
     {
         try {
-            $link = $item->filter('h3 > a')->link()->getUri();
+            $link = $item->filter(self::FILTER_RATING_LINK)->link()->getUri();
             try {
                 $movie = new Item();
-                $movie->imdb_id = preg_replace('@.*title/(.*)/.*@', '\\1', $link);
+                $movie->imdb_id = preg_replace(self::REGEX_TITLE, '\\1', $link);
                 $movie->reviewer = $this->user;
                 $movie->rating = (int) $item->filter(self::FILTER_RATING_ITEM)->text();
             } catch (InvalidArgumentException $e) {
@@ -204,26 +209,13 @@ class Scraper implements ScraperInterface
     public function getMovies(): array
     {
         $this->current_page = $this->getUrl();
-        try {
-            $item = $this->current_page->filter(self::FILTER_RATING_CONTAINER);
-        } catch (InvalidArgumentException $e) {
-            throw new ScraperException(
-                message:  'Could not find ratings on this page',
-                code:     ScraperException::CODE_MAP['NO_RATINGS'],
-                previous: $e
-            );
-        }
+        $item = $this->current_page->filter(self::FILTER_RATING_CONTAINER);
 
         $movies = [];
-        $last_item = false;
-        while (!$last_item) {
-            try {
-                $movies[] = $this->processItem($item);
-                $item = $item->nextAll();
-            } catch (ScraperException $e) {
-                if ($e->getCode() === ScraperException::CODE_MAP['END_OF_PAGE']) $last_item = true;
-                else throw $e;
-            }
+        try {
+            while ($movies[] = $this->processItem($item)) $item = $item->nextAll();
+        } catch (ScraperException $e) {
+            if ($e->getCode() !== ScraperException::CODE_MAP['END_OF_PAGE']) throw $e;
         }
         return $movies;
     }
