@@ -4,11 +4,7 @@ This is an experiment/exercise in building a composer package, and setting it up
 
 It is a scraper that lookups up an IMDB users reviews, scrapes them, transforms them and spits them out as objects.  
 
-Am i still php signed ?
-And now ? have i lost all keys ?
-How about now ?
-Does it call the new version of gpg ?
-OD
+another test - no linux based gpg keys or anything inside the gitbash configs
 
 ## Usage
 
