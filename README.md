@@ -6,6 +6,9 @@ It is a scraper that lookups up an IMDB users reviews, scrapes them, transforms 
 
 Am i still php signed ?
 And now ? have i lost all keys ?
+How about now ?
+Does it call the new version of gpg ?
+OD
 
 ## Usage
 
