@@ -4,7 +4,6 @@ This is an experiment/exercise in building a composer package, and setting it up
 
 It is a scraper that lookups up an IMDB users reviews, scrapes them, transforms them and spits them out as objects.  
 
-another test - no linux based gpg keys or anything inside the gitbash configs
 
 ## Usage
 
