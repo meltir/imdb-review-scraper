@@ -12,10 +12,22 @@ permissions:
 jobs:
   build:
 
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+#    runs-on: self-hosted
 
     steps:
     - uses: actions/checkout@v3
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+        tools: infection, composer:v2.1
+        extensions: intl, curl
+        coverage: xdebug
+
+    - name: Check PHP
+      run: composer check-platform-reqs
 
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
@@ -39,4 +51,4 @@ jobs:
       run: composer test
 
     - name: Run infection
-      run: composer infection
+      run: infection

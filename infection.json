@@ -5,10 +5,8 @@
             "src"
         ]
     },
-    "logs": {
-        "text": "storage"
-    },
     "mutators": {
-        "@default": true
+        "@default": true,
+        "@unwrap": false
     }
 }

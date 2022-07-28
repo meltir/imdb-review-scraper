@@ -6,6 +6,7 @@ use Meltir\ImdbRatingsScraper\Interface\ItemInterface;
 
 /**
  * @inheritDoc
+ * @infection-ignore-all
  */
 class Item implements ItemInterface
 {

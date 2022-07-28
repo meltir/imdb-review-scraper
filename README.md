@@ -13,8 +13,7 @@ Quick and dirty:
 
 require 'vendor/autoload.php';
 
-use Meltir\ImdbRatingsScraper\Scraper;
-$movies = new Scraper(new \GuzzleHttp\Client(), 'ur20552756');
+$movies = new Meltir\ImdbRatingsScraper\Scraper(new \GuzzleHttp\Client(), 'ur20552756');
 var_dump($movies->getMovies());
 ```
 
