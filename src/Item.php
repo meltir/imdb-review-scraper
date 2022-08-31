@@ -10,11 +10,9 @@ use Meltir\ImdbRatingsScraper\Interface\ItemInterface;
  */
 class Item implements ItemInterface
 {
-    public string $imdb_id;
-
-    public int $rating;
-
-    public string $reviewer;
+    public function __construct(public string $imdb_id, public int $rating, public string $reviewer)
+    {
+    }
 
     public function format(): ItemInterface
     {

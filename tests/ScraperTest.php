@@ -113,22 +113,10 @@ class ScraperTest extends TestCase
                 filename: __DIR__ . DIRECTORY_SEPARATOR . 'imdb-response-last.html'
             ));
         $user = 'foobar';
-        $movie1 = new Item();
-        $movie1->imdb_id = 'tt2435850';
-        $movie1->reviewer = $user;
-        $movie1->rating = 7;
-        $movie2 = new Item();
-        $movie2->imdb_id = 'tt0251282';
-        $movie2->reviewer = $user;
-        $movie2->rating = 8;
-        $movie3 = new Item();
-        $movie3->imdb_id = 'tt2435850';
-        $movie3->reviewer = $user;
-        $movie3->rating = 7;
-        $movie4 = new Item();
-        $movie4->imdb_id = 'tt0251282';
-        $movie4->reviewer = $user;
-        $movie4->rating = 8;
+        $movie1 = new Item('tt2435850', 7, $user);
+        $movie2 = new Item('tt0251282', 8, $user);
+        $movie3 = new Item('tt2435850', 7, $user);
+        $movie4 = new Item('tt0251282', 8, $user);
         // test that the correct urls are being called
         $client = $this->getClient([$r1, $r2]);
         $scraper = new Scraper($client, $user);
@@ -156,14 +144,8 @@ class ScraperTest extends TestCase
     {
         $user = 'foobar';
         $scraper = new Scraper($this->client, $user);
-        $movie1 = new Item();
-        $movie1->imdb_id = 'tt2435850';
-        $movie1->reviewer = $user;
-        $movie1->rating = 7;
-        $movie2 = new Item();
-        $movie2->imdb_id = 'tt0251282';
-        $movie2->reviewer = $user;
-        $movie2->rating = 8;
+        $movie1 = new Item('tt2435850', 7, $user);
+        $movie2 = new Item('tt0251282', 8, $user);
         $this->assertEquals([$movie1, $movie2], $scraper->getMovies());
     }
 

@@ -155,10 +155,11 @@ class Scraper implements ScraperInterface
         try {
             $link = $item->filter(self::FILTER_RATING_LINK)->link()->getUri();
             try {
-                $movie = new Item();
-                $movie->imdb_id = preg_replace(self::REGEX_TITLE, '\\1', $link);
-                $movie->reviewer = $this->user;
-                $movie->rating = (int) $item->filter(self::FILTER_RATING_ITEM)->text();
+                $movie = new Item(
+                    preg_replace(self::REGEX_TITLE, '\\1', $link),
+                    (int) $item->filter(self::FILTER_RATING_ITEM)->text(),
+                    $this->user
+                );
             } catch (InvalidArgumentException $e) {
                 throw new ScraperException(
                     message:  "Could not scrape this movie",
