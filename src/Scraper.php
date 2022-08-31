@@ -166,8 +166,6 @@ class Scraper implements ScraperInterface
     /**
      * Get all movies from all pages. This can timeout !
      *
-     * @todo implement this as a queue
-     *
      * @return Item[]
      *
      * @throws ScraperException
