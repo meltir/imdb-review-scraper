@@ -208,6 +208,7 @@ class Scraper implements ScraperInterface
                 throw $e;
             }
         }
+
         return $movies;
     }
 

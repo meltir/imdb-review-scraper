@@ -5,7 +5,8 @@ namespace Meltir\ImdbRatingsScraper;
 use Meltir\ImdbRatingsScraper\Interface\ItemInterface;
 
 /**
- * @inheritDoc
+ * {@inheritDoc}
+ *
  * @infection-ignore-all
  */
 class Item implements ItemInterface
