@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+#/bin/sh
+
+echo "php-cs-fixer pre commit hook start"
+
+FILES=`git diff --cached --name-only --diff-filter=ACM | grep -e '.php$'`
+if [ -z "$FILES" ]
+then
+    echo "No php files found in commit."
+else
+    echo ${FILES}
+    echo "docker-compose run -T --rm php vendor/bin/php-cs-fixer fix --using-cache=no --dry-run --diff --verbose ${FILES}"
+    docker-compose run -T --rm php vendor/bin/php-cs-fixer fix --using-cache=no --dry-run --diff ${FILES}
+    exit $?
+#    git add ${FILES}
+fi
+
+echo "php-cs-fixer pre commit hook finish"
+exit 0

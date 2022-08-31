@@ -6,9 +6,11 @@
         ]
     },
     "logs": {
-        "text": "storage"
+        "text": "infection.log",
+        "html": "infection.html"
     },
     "mutators": {
-        "@default": true
+        "@default": true,
+        "@unwrap": false
     }
 }
