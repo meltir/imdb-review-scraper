@@ -6,9 +6,9 @@ use PHPUnit\Framework\TestCase;
 
 class ItemTest extends TestCase
 {
-
     /**
      * @todo write tests for this and decorator
+     *
      * @return void
      */
     public function testFormat()

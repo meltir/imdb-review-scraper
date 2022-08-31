@@ -1,10 +1,15 @@
 <?php
+/**
+ * To run these tests:.
+ *
+ * docker-compose up -d
+ * docker-compose exec php ./vendor/bin/phpunit
+ */
 
 namespace Meltir\ImdbRatingsScraper\Tests;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -17,25 +22,8 @@ use Meltir\ImdbRatingsScraper\Scraper;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
-
-/**
- * @todo add failures and exceptions
- * @todo refactor and clean up
- * @todo add infection coverage
- * @todo check other assertions related to request
- * @todo do i need mocker here ? im not using it atm, maybe after i add the exceptions checks
- * @todo split this out into two classes success/failure and catch exceptions in failures
- * @todo add composer command to generate phpdoc in md and upload to github project wiki
- * @todo
- *
- * run tests and container with
- * docker run -ti -v `pwd`:/var/www/html --entrypoint /bin/sh scrapercontainer
- */
-
-
 class ScraperTest extends TestCase
 {
-
     protected ClientInterface $client;
 
     protected MockHandler $mock;
@@ -52,31 +40,34 @@ class ScraperTest extends TestCase
     }
 
     /**
-     * Generate a single response to an imdb query, always the same one
+     * Generate a single response to an imdb query, always the same one.
      */
     private function getSingleResponse(): Response
     {
         return new Response(
-            status:  200,
+            status: 200,
             headers: [],
-            body:    file_get_contents(
-                filename: __DIR__ . DIRECTORY_SEPARATOR . 'samples' . DIRECTORY_SEPARATOR . 'imdb-response.html'
+            body: file_get_contents(
+                filename: __DIR__.DIRECTORY_SEPARATOR.'samples'.DIRECTORY_SEPARATOR.'imdb-response.html'
             )
         );
     }
 
     private function getClient(?array $responses = null): Client
     {
-        if (is_null($responses)) $responses = [$this->getSingleResponse()];
+        if (is_null($responses)) {
+            $responses = [$this->getSingleResponse()];
+        }
         $this->container = [];
         $history = Middleware::history($this->container);
         $mock = new MockHandler($responses);
         $handlerStack = HandlerStack::create($mock);
         $this->mock = $mock;
         $handlerStack->push($history);
+
         return new Client([
             'handler' => $handlerStack,
-            'debug' => true
+            'debug' => true,
         ]);
     }
 
@@ -84,23 +75,25 @@ class ScraperTest extends TestCase
     {
         $scraper = new Scraper($this->client, 'foobar');
         $scraper->getMovies();
-        $this->assertEquals('https://www.imdb.com/NEXTPAGE', $scraper->getNextPage());
+        $this->assertSame('https://www.imdb.com/NEXTPAGE', $scraper->getNextPage());
     }
 
     public function testGetAllMovies()
     {
         $r1 = new Response(
-            status:  200,
+            status: 200,
             headers: [],
-            body:    file_get_contents(
-                filename: __DIR__ . DIRECTORY_SEPARATOR . 'samples' . DIRECTORY_SEPARATOR . 'imdb-response.html'
-            ));
+            body: file_get_contents(
+                filename: __DIR__.DIRECTORY_SEPARATOR.'samples'.DIRECTORY_SEPARATOR.'imdb-response.html'
+            )
+        );
         $r2 = new Response(
-            status:  200,
+            status: 200,
             headers: [],
-            body:    file_get_contents(
-                filename: __DIR__ . DIRECTORY_SEPARATOR . 'samples' . DIRECTORY_SEPARATOR . 'imdb-response-last.html'
-            ));
+            body: file_get_contents(
+                filename: __DIR__.DIRECTORY_SEPARATOR.'samples'.DIRECTORY_SEPARATOR.'imdb-response-last.html'
+            )
+        );
         $user = 'foobar';
         $movie1 = new Item('tt2435850', 7, $user);
         $movie2 = new Item('tt0251282', 8, $user);
@@ -109,11 +102,9 @@ class ScraperTest extends TestCase
         $client = $this->getClient([$r1, $r2]);
         $scraper = new Scraper($client, $user);
         $this->assertEquals([$movie1, $movie2, $movie3, $movie4], $scraper->getAllMovies());
-        $this->assertEquals('https://www.imdb.com/user/foobar/ratings', (string) $this->container[0]['request']->getUri());
-        $this->assertEquals('https://www.imdb.com/NEXTPAGE', (string) $this->container[1]['request']->getUri());
+        $this->assertSame('https://www.imdb.com/user/foobar/ratings', (string) $this->container[0]['request']->getUri());
+        $this->assertSame('https://www.imdb.com/NEXTPAGE', (string) $this->container[1]['request']->getUri());
     }
-
-
 
     public function testSetUrl()
     {
@@ -121,7 +112,7 @@ class ScraperTest extends TestCase
         $scraper = new Scraper($this->client, $user);
         $scraper->setUrl('foobar');
         $scraper->getMovies();
-        $this->assertEquals('foobar', $this->container[0]['request']->getUri());
+        $this->assertSame('foobar', (string) $this->container[0]['request']->getUri());
     }
 
     public function testGetMovies()
@@ -137,7 +128,7 @@ class ScraperTest extends TestCase
     {
         $scraper = new Scraper($this->client, 'foobar');
         $scraper->getMovies();
-        $this->assertEquals(
+        $this->assertSame(
             'https://www.imdb.com/user/foobar/ratings',
             (string) $this->container[0]['request']->getUri()
         );
@@ -146,11 +137,12 @@ class ScraperTest extends TestCase
     public function testCrawlerException()
     {
         $request = new Response(
-            status:  200,
+            status: 200,
             headers: [],
-            body:    file_get_contents(
-                filename: __DIR__ . DIRECTORY_SEPARATOR . 'samples' . DIRECTORY_SEPARATOR . 'imdb-response-broken.html'
-            ));
+            body: file_get_contents(
+                filename: __DIR__.DIRECTORY_SEPARATOR.'samples'.DIRECTORY_SEPARATOR.'imdb-response-broken.html'
+            )
+        );
         $client = $this->getClient([$request]);
         $scraper = new Scraper($client, 'foobar');
         $this->expectException(ScraperException::class);
@@ -162,12 +154,11 @@ class ScraperTest extends TestCase
     public function testGuzzleException()
     {
         $client = Mockery::mock(Client::class);
-        $client->expects('request')->andThrow(new RequestException('Boom no connect !', new Request('GET','test')));
+        $client->expects('request')->andThrow(new RequestException('Boom no connect !', new Request('GET', 'test')));
         $this->expectException(ScraperException::class);
         $this->expectExceptionCode(ScraperException::CODE_MAP['COULD_NOT_CONNECT']);
         $this->expectExceptionMessage('Could not connect to imdb');
         $scraper = new Scraper($client, 'foobar');
         $scraper->getMovies();
     }
-
 }

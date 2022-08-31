@@ -8,9 +8,7 @@ $finder = PhpCsFixer\Finder::create()
 
 $config = new PhpCsFixer\Config();
 return $config->setRules([
+    '@Symfony' => true,
+    '@PHP81Migration' => true,
     '@PSR12' => true,
-    'strict_param' => true,
-    'array_syntax' => ['syntax' => 'short'],
-])
-    ->setFinder($finder)
-    ;
+])->setFinder($finder);

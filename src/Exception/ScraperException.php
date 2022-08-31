@@ -6,10 +6,9 @@ use Exception;
 
 class ScraperException extends Exception
 {
-
     /**
      * This makes exception codes human-readable
-     * These should be http'ish
+     * These should be http'ish.
      */
     public const CODE_MAP = [
         'END_OF_PAGE' => 200,
