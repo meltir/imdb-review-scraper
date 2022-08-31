@@ -60,7 +60,7 @@ class ScraperTest extends TestCase
             status:  200,
             headers: [],
             body:    file_get_contents(
-                filename: __DIR__ . DIRECTORY_SEPARATOR . 'imdb-response.html'
+                filename: __DIR__ . DIRECTORY_SEPARATOR . 'samples' . DIRECTORY_SEPARATOR . 'imdb-response.html'
             )
         );
     }
@@ -93,13 +93,13 @@ class ScraperTest extends TestCase
             status:  200,
             headers: [],
             body:    file_get_contents(
-                filename: __DIR__ . DIRECTORY_SEPARATOR . 'imdb-response.html'
+                filename: __DIR__ . DIRECTORY_SEPARATOR . 'samples' . DIRECTORY_SEPARATOR . 'imdb-response.html'
             ));
         $r2 = new Response(
             status:  200,
             headers: [],
             body:    file_get_contents(
-                filename: __DIR__ . DIRECTORY_SEPARATOR . 'imdb-response-last.html'
+                filename: __DIR__ . DIRECTORY_SEPARATOR . 'samples' . DIRECTORY_SEPARATOR . 'imdb-response-last.html'
             ));
         $user = 'foobar';
         $movie1 = new Item('tt2435850', 7, $user);
@@ -149,7 +149,7 @@ class ScraperTest extends TestCase
             status:  200,
             headers: [],
             body:    file_get_contents(
-                filename: __DIR__ . DIRECTORY_SEPARATOR . 'imdb-response-broken.html'
+                filename: __DIR__ . DIRECTORY_SEPARATOR . 'samples' . DIRECTORY_SEPARATOR . 'imdb-response-broken.html'
             ));
         $client = $this->getClient([$request]);
         $scraper = new Scraper($client, 'foobar');
