@@ -33,7 +33,9 @@
         ],
         "post-install-cmd": [
             "@php -r \"copy('https://github.com/infection/infection/releases/download/0.26.13/infection.phar', 'vendor/bin/infection.phar');\"",
-            "chmod +x vendor/bin/infection.phar"
+            "chmod +x vendor/bin/infection.phar",
+            "cp .github/hooks/* .git/hooks/",
+            "chmod +x .git/hooks/*"
         ]
     },
     "minimum-stability": "stable",
