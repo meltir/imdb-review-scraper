@@ -41,11 +41,8 @@ class ScraperTest extends TestCase
     protected MockHandler $mock;
 
     /**
-     * @todo figure out how to do this with attributes (array shapes)
-     * Well, the below doesn't work with phpstorm
-     * @var array{request: Request, response: Response, error: array, options: array}[]
+     * @var array{array{request: Request, response: Response, error: array, options: array}}
      */
-//    #[ArrayShape(ARRAY_SHAPE_GUZZLE_HISTORY)]
     protected array $container;
 
     public function setUp(): void
@@ -56,7 +53,6 @@ class ScraperTest extends TestCase
 
     /**
      * Generate a single response to an imdb query, always the same one
-     * @return Response
      */
     private function getSingleResponse(): Response
     {
@@ -69,15 +65,8 @@ class ScraperTest extends TestCase
         );
     }
 
-    /**
-     * @param Response[]|null $responses
-     * @return Client
-     */
     private function getClient(?array $responses = null): Client
     {
-        /**
-         * @todo find a nicer way to load the file
-         */
         if (is_null($responses)) $responses = [$this->getSingleResponse()];
         $this->container = [];
         $history = Middleware::history($this->container);
@@ -117,14 +106,11 @@ class ScraperTest extends TestCase
         $movie2 = new Item('tt0251282', 8, $user);
         $movie3 = new Item('tt2435850', 7, $user);
         $movie4 = new Item('tt0251282', 8, $user);
-        // test that the correct urls are being called
         $client = $this->getClient([$r1, $r2]);
         $scraper = new Scraper($client, $user);
         $this->assertEquals([$movie1, $movie2, $movie3, $movie4], $scraper->getAllMovies());
-        $request = $this->container[0]['request'];
-        $this->assertEquals('https://www.imdb.com/user/foobar/ratings', (string) $request->getUri());
-        $request = $this->container[1]['request'];
-        $this->assertEquals('https://www.imdb.com/NEXTPAGE', (string) $request->getUri());
+        $this->assertEquals('https://www.imdb.com/user/foobar/ratings', (string) $this->container[0]['request']->getUri());
+        $this->assertEquals('https://www.imdb.com/NEXTPAGE', (string) $this->container[1]['request']->getUri());
     }
 
 
@@ -135,9 +121,7 @@ class ScraperTest extends TestCase
         $scraper = new Scraper($this->client, $user);
         $scraper->setUrl('foobar');
         $scraper->getMovies();
-        /** @var Request $request */
-        $request = $this->container[0]['request'];
-        $this->assertEquals('foobar', $request->getUri());
+        $this->assertEquals('foobar', $this->container[0]['request']->getUri());
     }
 
     public function testGetMovies()
@@ -153,9 +137,10 @@ class ScraperTest extends TestCase
     {
         $scraper = new Scraper($this->client, 'foobar');
         $scraper->getMovies();
-        /** @var Request $request */
-        $request = $this->container[0]['request'];
-        $this->assertEquals('https://www.imdb.com/user/foobar/ratings', (string) $request->getUri());
+        $this->assertEquals(
+            'https://www.imdb.com/user/foobar/ratings',
+            (string) $this->container[0]['request']->getUri()
+        );
     }
 
     public function testCrawlerException()
@@ -171,8 +156,7 @@ class ScraperTest extends TestCase
         $this->expectException(ScraperException::class);
         $this->expectExceptionCode(ScraperException::CODE_MAP['MOVIE_FAILED']);
         $this->expectExceptionMessage('Could not scrape this movie');
-        $x = $scraper->getMovies();
-//        $this->assertEquals(1,2);
+        $scraper->getMovies();
     }
 
     public function testGuzzleException()
