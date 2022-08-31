@@ -3,3 +3,4 @@
 /.php-cs-fixer.cache
 /.idea/
 /infection.log
+/infection.html

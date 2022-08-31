@@ -5,6 +5,10 @@
             "src"
         ]
     },
+    "logs": {
+        "text": "infection.log",
+        "html": "infection.html"
+    },
     "mutators": {
         "@default": true,
         "@unwrap": false
