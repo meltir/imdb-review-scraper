@@ -124,6 +124,13 @@ class ScraperTest extends TestCase
         $this->assertEquals([$movie1, $movie2], $scraper->getMovies());
     }
 
+    /**
+     * Test.
+     *
+     * @return void
+     * 
+     * @throws ScraperException
+     */
     public function testConstructor()
     {
         $scraper = new Scraper($this->client, 'foobar');
