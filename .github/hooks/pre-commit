@@ -10,7 +10,7 @@ then
 else
     echo ${FILES}
     echo "docker-compose run -T --rm php vendor/bin/php-cs-fixer fix --using-cache=no --dry-run --diff --verbose ${FILES}"
-    docker-compose run -T --rm php vendor/bin/php-cs-fixer fix --using-cache=no --dry-run --diff ${FILES}
+    docker-compose run -T --rm php vendor/bin/php-cs-fixer fix --using-cache=no --dry-run --diff --verbose ${FILES}
     exit $?
 #    git add ${FILES}
 fi
