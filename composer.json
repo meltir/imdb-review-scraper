@@ -42,10 +42,10 @@
             "@install-git-hooks"
         ],
         "php-cs-fixer-check": [
-            "./vendor/bin/php-cs-fixer fix --using-cache=no --dry-run --verbose --diff"
+            "./vendor/bin/php-cs-fixer fix --using-cache=no  --config=.php-cs-fixer.dist.php --dry-run --verbose --diff"
         ],
         "php-cs-fixer-fix": [
-            "./vendor/bin/php-cs-fixer fix --using-cache=no"
+            "./vendor/bin/php-cs-fixer fix --using-cache=no --config=.php-cs-fixer.dist.php"
         ]
 
     },

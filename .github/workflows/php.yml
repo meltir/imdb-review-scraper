@@ -52,3 +52,6 @@ jobs:
 
     - name: Run infection
       run: composer infection-auto
+
+    - name: Run php-cs-fixer
+      run: composer php-cs-fixer-check
