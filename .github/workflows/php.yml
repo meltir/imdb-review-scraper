@@ -17,33 +17,22 @@ jobs:
     name: build
     steps:
     - uses: actions/checkout@v3
-
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.1'
-        tools: infection, composer:v2.1
-        extensions: intl, curl
-        coverage: xdebug
-
     - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
-
-    - name: Check PHP
-      run: composer check-platform-reqs
-
-    - name: Validate composer.json and composer.lock
-      run: composer validate --strict
-
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v3
+      uses: php-actions/composer@v6
       with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
-
+        php_extensions: xdebug
+        args: --prefer-dist
+    - name: Check PHP
+      uses: php-actions/composer@v6
+      with:
+        php_extensions: xdebug
+        args: --prefer-dist
+        command: check-platform-reqs
+    - name: Check PHP
+      uses: php-actions/composer@v6
+      with:
+        args: --strict
+        command: validate
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
   test:
@@ -51,33 +40,36 @@ jobs:
     needs: build
     name: Run tests and check them with infection
     steps:
-      - name: Cache Composer packages
-        id: composer-cache
-        uses: actions/cache@v3
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        uses: php-actions/composer@v6
         with:
-          path: vendor
-          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-php-
-
+          php_extensions: xdebug
+          args: --prefer-dist
       - name: Run test suite
-        run: composer phpunit
+        uses: php-actions/composer@v6
+        with:
+          php_extensions: xdebug
+          command: phpunit
+      - name: Run test suite
+        uses: php-actions/composer@v6
+        with:
+          php_extensions: xdebug
+          command: infection-auto
 
-      - name: Run infection
-        run: composer infection-auto
   style:
     runs-on: ubuntu-latest
     needs: build
     name: Check coding style
     steps:
-      - name: Cache Composer packages
-        id: composer-cache
-        uses: actions/cache@v3
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        uses: php-actions/composer@v6
         with:
-          path: vendor
-          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-php-
-
-      - name: Run php-cs-fixer
-        run: composer php-cs-fixer-check
+          php_extensions: xdebug
+          args: --prefer-dist
+      - name: Run test suite
+        uses: php-actions/composer@v6
+        with:
+          php_extensions: xdebug
+          command: php-cs-fixer-check
