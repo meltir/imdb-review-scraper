@@ -27,6 +27,9 @@ jobs:
       - name: Validate composer.json and composer.lock
         run: composer validate --strict
 
+      - name: check the sha of this action
+        run: echo '${{github.sha}}'
+
 
       # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
       # Docs: https://getcomposer.org/doc/articles/scripts.md
@@ -35,21 +38,32 @@ jobs:
     name: Run tests and check them with infection
     steps:
       - uses: actions/checkout@v3
+
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
-      - name: Install dependencies
+
+      - name: Install infection
         run: composer install-infection-phar
+
       - name: Run phpunit tests
         run: composer phpunit
+
       - name: Run infection tests
         run: composer infection-auto
+
+      - name: check the sha of this action
+        run: echo '${{github.sha}}'
 
   style:
     runs-on: ubuntu-latest
     name: Check coding style
     steps:
       - uses: actions/checkout@v3
+
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
+
       - name: Run phpunit tests
         run: composer php-cs-fixer-check
+      - name: check the sha of this action
+        run: echo '${{github.sha}}'
