@@ -21,22 +21,33 @@
         }
     ],
     "scripts": {
-        "test": [
+        "phpunit": [
             "Composer\\Config::disableProcessTimeout",
             "./vendor/bin/phpunit"
         ],
         "infection-auto": [
             "Composer\\Config::disableProcessTimeout",
-            "./vendor/bin/infection.phar --ignore-msi-with-no-mutations --only-covered --min-msi=46 --min-covered-msi=46"
+            "./vendor/bin/infection.phar --ignore-msi-with-no-mutations --only-covered --min-msi=95 --min-covered-msi=95"
         ],
-        "phpinfo": [ "@php -i"
-        ],
-        "post-install-cmd": [
+        "install-infection-phar" : [
             "@php -r \"copy('https://github.com/infection/infection/releases/download/0.26.13/infection.phar', 'vendor/bin/infection.phar');\"",
-            "chmod +x vendor/bin/infection.phar",
+            "chmod +x vendor/bin/infection.phar"
+        ],
+        "install-git-hooks": [
             "cp .github/hooks/* .git/hooks/",
             "chmod +x .git/hooks/*"
+        ],
+        "post-install-cmd": [
+            "@install-infection-phar",
+            "@install-git-hooks"
+        ],
+        "php-cs-fixer-check": [
+            "./vendor/bin/php-cs-fixer fix --using-cache=no  --config=.php-cs-fixer.dist.php --dry-run --verbose --diff"
+        ],
+        "php-cs-fixer-fix": [
+            "./vendor/bin/php-cs-fixer fix --using-cache=no --config=.php-cs-fixer.dist.php"
         ]
+
     },
     "minimum-stability": "stable",
     "require": {

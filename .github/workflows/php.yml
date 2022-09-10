@@ -13,42 +13,79 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-#    runs-on: self-hosted
+    #    runs-on: self-hosted
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.1'
-        tools: infection, composer:v2.1
-        extensions: intl, curl
-        coverage: xdebug
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
 
-    - name: Check PHP
-      run: composer check-platform-reqs
+      - name: Install infection
+        run: composer install-infection-phar
 
-    - name: Validate composer.json and composer.lock
-      run: composer validate --strict
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
+        shell: bash
 
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v3
-      with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-${{steps.get-date.outputs.date}}
 
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
+      - name: Check PHP
+        run: composer check-platform-reqs
 
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
 
-    - name: Run test suite
-      run: composer test
+  test:
+    runs-on: ubuntu-latest
+    name: Phpunit and infection
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
 
-    - name: Run infection
-      run: infection
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
+        shell: bash
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-${{steps.get-date.outputs.date}}
+
+      - name: Run phpunit tests
+        run: composer phpunit
+
+      - name: Run infection tests
+        run: composer infection-auto
+
+  style:
+    runs-on: ubuntu-latest
+    name: Check coding style
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
+        shell: bash
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-${{steps.get-date.outputs.date}}
+
+      - name: Run phpunit tests
+        run: composer php-cs-fixer-check
+
