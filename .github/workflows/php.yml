@@ -21,14 +21,29 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
 
+      - name: Install infection
+        run: composer install-infection-phar
+
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
+        shell: bash
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-${{steps.get-date.outputs.date}}
+
       - name: Check PHP
         run: composer check-platform-reqs
 
       - name: Validate composer.json and composer.lock
         run: composer validate --strict
 
-      - name: check the sha of this action
-        run: echo '${{github.sha}}'
+#      - name: check the sha of this action
+#        run: echo '${{github.sha}}'
 
 
       # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
@@ -36,14 +51,16 @@ jobs:
   test:
     runs-on: ubuntu-latest
     name: Run tests and check them with infection
+    needs: build
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress
 
-      - name: Install infection
-        run: composer install-infection-phar
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-${{steps.get-date.outputs.date}}
 
       - name: Run phpunit tests
         run: composer phpunit
@@ -51,19 +68,20 @@ jobs:
       - name: Run infection tests
         run: composer infection-auto
 
-      - name: check the sha of this action
-        run: echo '${{github.sha}}'
-
   style:
     runs-on: ubuntu-latest
     name: Check coding style
+    needs: build
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-${{steps.get-date.outputs.date}}
 
       - name: Run phpunit tests
         run: composer php-cs-fixer-check
-      - name: check the sha of this action
-        run: echo '${{github.sha}}'
+
