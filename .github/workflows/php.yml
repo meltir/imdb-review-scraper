@@ -13,63 +13,41 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-#    runs-on: self-hosted
-    name: build
+    #    runs-on: self-hosted
+
     steps:
-    - uses: actions/checkout@v3
-    - name: Install dependencies
-      uses: php-actions/composer@v6
-      with:
-        php_extensions: xdebug
-        args: --prefer-dist
-    - name: Check PHP
-      uses: php-actions/composer@v6
-      with:
-        php_extensions: xdebug
-        args: --prefer-dist
-        command: check-platform-reqs
-    - name: Check PHP
-      uses: php-actions/composer@v6
-      with:
-        args: --strict
-        command: validate
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
+      - uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Check PHP
+        run: composer check-platform-reqs
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
+
+
+      # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
+      # Docs: https://getcomposer.org/doc/articles/scripts.md
   test:
     runs-on: ubuntu-latest
-    needs: build
     name: Run tests and check them with infection
     steps:
       - uses: actions/checkout@v3
       - name: Install dependencies
-        uses: php-actions/composer@v6
-        with:
-          php_extensions: xdebug
-          args: --prefer-dist
-      - name: Run test suite
-        uses: php-actions/composer@v6
-        with:
-          php_extensions: xdebug
-          command: phpunit
-      - name: Run test suite
-        uses: php-actions/composer@v6
-        with:
-          php_extensions: xdebug
-          command: infection-auto
+        run: composer install --prefer-dist --no-progress
+      - name: Run phpunit tests
+        run: composer phpunit
+      - name: Run infection tests
+        run: composer infection-auto
 
   style:
     runs-on: ubuntu-latest
-    needs: build
     name: Check coding style
     steps:
       - uses: actions/checkout@v3
       - name: Install dependencies
-        uses: php-actions/composer@v6
-        with:
-          php_extensions: xdebug
-          args: --prefer-dist
-      - name: Run test suite
-        uses: php-actions/composer@v6
-        with:
-          php_extensions: xdebug
-          command: php-cs-fixer-check
+        run: composer install --prefer-dist --no-progress
+      - name: Run phpunit tests
+        run: composer php-cs-fixer-check
