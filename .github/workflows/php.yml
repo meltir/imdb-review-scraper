@@ -41,7 +41,6 @@ jobs:
 
       - name: Cache Composer dependencies
         uses: actions/cache@v3
-        id: cache
         with:
           path: vendor
           key: ${{ runner.os }}-${{steps.get-date.outputs.date}}
