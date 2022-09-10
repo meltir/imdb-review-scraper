@@ -48,7 +48,7 @@ jobs:
     # Docs: https://getcomposer.org/doc/articles/scripts.md
 
     - name: Run test suite
-      run: composer test
+      run: composer phpunit
 
     - name: Run infection
       run: composer infection-auto
