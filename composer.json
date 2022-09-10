@@ -41,9 +41,13 @@
             "@install-infection-phar",
             "@install-git-hooks"
         ],
-        "php-cs-fixer": [
+        "php-cs-fixer-check": [
             "./vendor/bin/php-cs-fixer fix --using-cache=no --dry-run --verbose --diff"
+        ],
+        "php-cs-fixer-fix": [
+            "./vendor/bin/php-cs-fixer fix --using-cache=no"
         ]
+
     },
     "minimum-stability": "stable",
     "require": {

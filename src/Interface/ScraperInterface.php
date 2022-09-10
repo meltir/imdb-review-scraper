@@ -2,8 +2,8 @@
 
 namespace Meltir\ImdbRatingsScraper\Interface;
 
-use Meltir\ImdbRatingsScraper\Exception\ScraperException;
 use GuzzleHttp\ClientInterface;
+use Meltir\ImdbRatingsScraper\Exception\ScraperException;
 
 /**
  * Interface for the review scraper.
