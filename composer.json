@@ -65,7 +65,7 @@
         "phpmd/phpmd": "^2.12",
         "friendsofphp/php-cs-fixer": "^3.8",
         "phpstan/phpstan": "^1.7",
-        "vimeo/psalm": "^4.23"
+        "vimeo/psalm": "^4.23 || ^5.0"
     },
     "config": {
         "allow-plugins": {
