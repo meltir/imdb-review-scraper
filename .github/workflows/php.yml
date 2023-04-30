@@ -97,4 +97,24 @@ jobs:
 
       - name: Run phpunit tests
         run: composer php-cs-fixer-check
+  standards:
+    runs-on: ubuntu-latest
+    name: Check coding style
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
 
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
+        shell: bash
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-${{steps.get-date.outputs.date}}
+
+      - name: Run phpunit tests
+        run: composer phpstan-check

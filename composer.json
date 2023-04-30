@@ -30,7 +30,7 @@
             "./vendor/bin/infection.phar --ignore-msi-with-no-mutations --only-covered --min-msi=95 --min-covered-msi=95"
         ],
         "install-infection-phar" : [
-            "@php -r \"copy('https://github.com/infection/infection/releases/download/0.26.13/infection.phar', 'vendor/bin/infection.phar');\"",
+            "@php -r \"copy('https://github.com/infection/infection/releases/download/0.26.21/infection.phar', 'vendor/bin/infection.phar');\"",
             "chmod +x vendor/bin/infection.phar"
         ],
         "install-git-hooks": [
@@ -42,30 +42,32 @@
             "@install-git-hooks"
         ],
         "php-cs-fixer-check": [
-            "./vendor/bin/php-cs-fixer fix --using-cache=no  --config=.php-cs-fixer.dist.php --dry-run --verbose --diff"
+            "./vendor/bin/php-cs-fixer fix --using-cache=no --config=.php-cs-fixer.dist.php --dry-run --verbose --diff"
         ],
         "php-cs-fixer-fix": [
             "./vendor/bin/php-cs-fixer fix --using-cache=no --config=.php-cs-fixer.dist.php"
+        ],
+
+        "phpstan-check" : [
+            "./vendor/bin/phpstan"
         ]
 
     },
     "minimum-stability": "stable",
     "require": {
-        "ext-curl": "*",
-        "php": "8.1.*",
-        "guzzlehttp/guzzle": "^7.4",
-        "symfony/dom-crawler": "^6.1",
-        "symfony/css-selector": "^6.1"
+        "php": ">=8.2",
+        "guzzlehttp/guzzle": "^7.5",
+        "symfony/dom-crawler": "^6.2",
+        "symfony/css-selector": "^6.2"
     },
     "require-dev": {
         "ext-intl": "*",
         "phpunit/phpunit": "^9",
         "mockery/mockery": "^1.5",
         "squizlabs/php_codesniffer": "^3.7",
-        "phpmd/phpmd": "^2.12",
-        "friendsofphp/php-cs-fixer": "^3.8",
-        "phpstan/phpstan": "^1.7",
-        "vimeo/psalm": "^4.23"
+        "phpmd/phpmd": "^2.13",
+        "friendsofphp/php-cs-fixer": "^3.16",
+        "phpstan/phpstan": "^1.10"
     },
     "config": {
         "allow-plugins": {

@@ -1,4 +1,4 @@
-FROM php:8.1-cli-alpine
+FROM php:8.2-cli-alpine
 
 LABEL maintainer="Lukasz Andrzejak"
 LABEL description="composer packager image"
@@ -13,7 +13,7 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
 
 
-RUN apk add --virtual .phpize-deps autoconf g++ make \
+RUN apk add --virtual .phpize-deps autoconf g++ make linux-headers \
     && pecl install xdebug && docker-php-ext-enable xdebug \
     && apk del .phpize-deps
 
