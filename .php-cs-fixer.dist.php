@@ -6,7 +6,8 @@ $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__);
 
 $config = new PhpCsFixer\Config();
+
 return $config->setRules([
     '@Symfony' => true,
-    '@PHP81Migration' => true,
+    '@PHP82Migration' => true,
 ])->setFinder($finder);

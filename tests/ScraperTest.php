@@ -19,7 +19,6 @@ use GuzzleHttp\Psr7\Response;
 use Meltir\ImdbRatingsScraper\Exception\ScraperException;
 use Meltir\ImdbRatingsScraper\Item;
 use Meltir\ImdbRatingsScraper\Scraper;
-use Mockery;
 use PHPUnit\Framework\TestCase;
 
 class ScraperTest extends TestCase
@@ -153,7 +152,7 @@ class ScraperTest extends TestCase
 
     public function testGuzzleException()
     {
-        $client = Mockery::mock(Client::class);
+        $client = \Mockery::mock(Client::class);
         $client->expects('request')->andThrow(new RequestException('Boom no connect !', new Request('GET', 'test')));
         $this->expectException(ScraperException::class);
         $this->expectExceptionCode(ScraperException::CODE_MAP['COULD_NOT_CONNECT']);

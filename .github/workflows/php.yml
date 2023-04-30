@@ -18,6 +18,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
       - name: Get Date
         id: get-date
         run: |
@@ -58,6 +63,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
       - name: Get Date
         id: get-date
         run: |
@@ -83,6 +93,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
       - name: Get Date
         id: get-date
         run: |
@@ -95,6 +110,31 @@ jobs:
           path: vendor
           key: ${{ runner.os }}-${{steps.get-date.outputs.date}}
 
-      - name: Run phpunit tests
+      - name: Run php-cs-fixer checks
         run: composer php-cs-fixer-check
+  standards:
+    runs-on: ubuntu-latest
+    name: Check standards
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
 
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
+        shell: bash
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-${{steps.get-date.outputs.date}}
+
+      - name: Run phpstan tests
+        run: composer phpstan-check

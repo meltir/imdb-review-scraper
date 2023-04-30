@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Imdb scraper that looks up a users publicly available reviews and scrapes them.
  *
@@ -34,7 +36,6 @@ namespace Meltir\ImdbRatingsScraper;
 
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
-use InvalidArgumentException;
 use Meltir\ImdbRatingsScraper\Exception\ScraperException;
 use Meltir\ImdbRatingsScraper\Interface\ItemInterface;
 use Meltir\ImdbRatingsScraper\Interface\ScraperInterface;
@@ -92,7 +93,7 @@ class Scraper implements ScraperInterface
     protected const FILTER_RATING_LINK = /* @lang CSS */
         'h3 > a';
 
-    protected const REGEX_TITLE = /* @lang RegExp */
+    protected const REGEX_IMDB_ID = /* @lang RegExp */
         '@.*title/(.*)/.*@';
 
     /**
@@ -139,25 +140,26 @@ class Scraper implements ScraperInterface
      *
      * @param Crawler $item a movie and its rating
      *
-     * @return Item
+     * @return Item|false
      *
      * @throws ScraperException
      */
-    private function processItem(Crawler $item): ItemInterface
+    private function processItem(Crawler $item): ItemInterface|false
     {
         try {
             $link = $item->filter(self::FILTER_RATING_LINK)->link()->getUri();
             try {
+                $id = (string) preg_replace(self::REGEX_IMDB_ID, '\\1', $link);
                 $movie = new Item(
-                    preg_replace(self::REGEX_TITLE, '\\1', $link),
-                    (int) $item->filter(self::FILTER_RATING_ITEM)->text(),
-                    $this->user
+                    imdb_id: $id,
+                    rating: (int) $item->filter(self::FILTER_RATING_ITEM)->text(),
+                    reviewer: $this->user
                 );
-            } catch (InvalidArgumentException $e) {
+            } catch (\InvalidArgumentException $e) {
                 throw new ScraperException(message: 'Could not scrape this movie', code: ScraperException::CODE_MAP['MOVIE_FAILED'], previous: $e);
             }
-        } catch (InvalidArgumentException $e) {
-            throw new ScraperException(message: 'No more movies on this list', code: ScraperException::CODE_MAP['END_OF_PAGE'], previous: $e);
+        } catch (\InvalidArgumentException $e) {
+            return false;
         }
 
         return $movie;
@@ -173,17 +175,12 @@ class Scraper implements ScraperInterface
     public function getAllMovies(): array
     {
         $movies = $this->getMovies();
-        try {
-            while ($url = $this->getNextPage()) {
-                $this->setUrl($url);
-                $movies = array_merge($movies, $this->getMovies());
-            }
-        } catch (ScraperException $e) {
-            if ($e->getCode() === ScraperException::CODE_MAP['NO_NEXT_PAGE']) {
-                return $movies;
-            }
-            throw $e;
+        while ($url = $this->getNextPage()) {
+            $this->setUrl($url);
+            $movies = array_merge($movies, $this->getMovies());
         }
+
+        return $movies;
     }
 
     /**
@@ -200,7 +197,8 @@ class Scraper implements ScraperInterface
 
         $movies = [];
         try {
-            while ($movies[] = $this->processItem($item)) {
+            while ($movie = $this->processItem($item)) {
+                $movies[] = $movie;
                 $item = $item->nextAll();
             }
         } catch (ScraperException $e) {
@@ -214,10 +212,8 @@ class Scraper implements ScraperInterface
 
     /**
      * Get the url of the next page, or exception if not found.
-     *
-     * @throws ScraperException
      */
-    public function getNextPage(): string
+    public function getNextPage(): string|false
     {
         try {
             return $this
@@ -225,8 +221,8 @@ class Scraper implements ScraperInterface
                 ->filter(self::FILTER_NEXT_PAGE)
                 ->link()
                 ->getUri();
-        } catch (InvalidArgumentException $e) {
-            throw new ScraperException('Next page not found', ScraperException::CODE_MAP['NO_NEXT_PAGE'], $e);
+        } catch (\InvalidArgumentException $e) {
+            return false;
         }
     }
 }

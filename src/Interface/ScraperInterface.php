@@ -44,8 +44,6 @@ interface ScraperInterface
 
     /**
      * Get the url of the next page, or exception if not found.
-     *
-     * @throws ScraperException
      */
-    public function getNextPage(): string;
+    public function getNextPage(): string|false;
 }

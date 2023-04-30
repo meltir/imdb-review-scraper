@@ -4,7 +4,7 @@ namespace Meltir\ImdbRatingsScraper\Exception;
 
 use Exception;
 
-class ScraperException extends Exception
+class ScraperException extends \Exception
 {
     /**
      * This makes exception codes human-readable
