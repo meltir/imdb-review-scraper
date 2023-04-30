@@ -1,0 +1,34 @@
+name: 'Tag a release after merge into main'
+
+on:
+  push:
+    branches: [ "main", "feature/tag-release" ]
+
+permissions:
+  contents: write
+
+jobs:
+  tag-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch last release number
+        run: |
+          #once the production version will come out, these will need to change
+          LAST=`gh release list -L 1 | sed -e 's/^\(0\.[0-9].[0-9]\).*/\1/'`
+          echo "last=$LAST" >> $GITHUB_ENV
+          echo $LAST
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: get_latest
+      - name: Bump release version
+        id: bump_version
+        uses: christian-draeger/increment-semantic-version@1.1.0
+        with:
+          current-version: env.last # also accepted: 'v2.11.7-alpha.3' | '2.11.7-alpha3'
+          version-fragment: 'alpha'
+      - name: Tag a new release
+        run: |
+          gh release create --generate-notes ${{ steps.bump_version.outputs.next-version }}
+          echo ${{ steps.bump_version.outputs.next-version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
