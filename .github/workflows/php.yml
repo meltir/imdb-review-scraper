@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup PHP with PECL extension
+      - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
@@ -63,7 +63,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup PHP with PECL extension
+      - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
@@ -93,7 +93,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup PHP with PECL extension
+      - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
@@ -110,16 +110,16 @@ jobs:
           path: vendor
           key: ${{ runner.os }}-${{steps.get-date.outputs.date}}
 
-      - name: Run phpunit tests
+      - name: Run php-cs-fixer checks
         run: composer php-cs-fixer-check
   standards:
     runs-on: ubuntu-latest
-    name: Check coding style
+    name: Check standards
     needs: build
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup PHP with PECL extension
+      - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
@@ -136,5 +136,5 @@ jobs:
           path: vendor
           key: ${{ runner.os }}-${{steps.get-date.outputs.date}}
 
-      - name: Run phpunit tests
+      - name: Run phpstan tests
         run: composer phpstan-check
