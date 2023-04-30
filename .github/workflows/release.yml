@@ -2,7 +2,7 @@ name: 'Tag a release after merge into main'
 
 on:
   push:
-    branches: [ "main", "feature/tag-release" ]
+    branches: [ "main" ]
 
 permissions:
   contents: write
