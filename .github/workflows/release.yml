@@ -10,6 +10,8 @@ permissions:
 jobs:
   tag-and-release:
     runs-on: ubuntu-latest
+    outputs:
+      output1: ${{ steps.get_latest.last }}
     steps:
       - uses: actions/checkout@v3
       - name: Fetch last release number
@@ -17,8 +19,7 @@ jobs:
           #once the production version will come out, these will need to change
           gh release list -L 1 | sed -e 's/^\(0\.[0-9].[0-9]\).*/\1/'
           LAST=`gh release list -L 1 | sed -e 's/^\(0\.[0-9].[0-9]\).*/\1/'`
-          echo "last=$LAST" >> $GITHUB_ENV
-          echo $LAST
+          echo "last=$LAST" >> "$GITHUB_OUTPUT"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         id: get_latest
@@ -26,7 +27,7 @@ jobs:
         id: bump_version
         uses: christian-draeger/increment-semantic-version@1.1.0
         with:
-          current-version: 'env.last' # also accepted: 'v2.11.7-alpha.3' | '2.11.7-alpha3'
+          current-version:  ${{ steps.get_latest.last }} # also accepted: 'v2.11.7-alpha.3' | '2.11.7-alpha3'
           version-fragment: 'alpha'
       - name: Tag a new release
         run: |
