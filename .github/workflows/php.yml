@@ -18,6 +18,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Setup PHP with PECL extension
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
       - name: Get Date
         id: get-date
         run: |
@@ -58,6 +63,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Setup PHP with PECL extension
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
       - name: Get Date
         id: get-date
         run: |
@@ -83,6 +93,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Setup PHP with PECL extension
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
       - name: Get Date
         id: get-date
         run: |
@@ -103,6 +118,11 @@ jobs:
     needs: build
     steps:
       - uses: actions/checkout@v3
+
+      - name: Setup PHP with PECL extension
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
 
       - name: Get Date
         id: get-date
