@@ -95,7 +95,7 @@ jobs:
         run: |
           composer ci-infection
           cat /tmp/infection/phpunitConfiguration.initial.infection.xml
-        script: bash
+        shell: bash
 
   style:
     runs-on: ubuntu-latest
