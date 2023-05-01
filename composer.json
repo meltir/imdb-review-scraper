@@ -53,11 +53,11 @@
         ],
 
         "ci-phpunit" : [
-            "@phpunit --log-junit=./phpunit.xml"
+            "@phpunit --log-junit=./phpunit-log.xml"
         ],
 
         "ci-infection": [
-            "@infection --min-msi=95 --min-covered-msi=95 --debug"
+            "@infection --min-msi=95 --min-covered-msi=95 --logger-github"
         ],
 
         "ci-php-cs-fixer": [

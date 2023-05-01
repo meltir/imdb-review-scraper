@@ -16,6 +16,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Check PHP
+        run: composer check-platform-reqs
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -48,13 +54,8 @@ jobs:
           path: vendor
           key: ${{ runner.os }}-${{steps.get-date.outputs.date}}
 
-      - name: Check PHP
-        run: composer check-platform-reqs
 
-      - name: Validate composer.json and composer.lock
-        run: composer validate --strict
-
-  test:
+  unit:
     runs-on: ubuntu-latest
     name: Phpunit and infection
     needs: build
@@ -88,17 +89,36 @@ jobs:
         if: success() || failure()
         with:
           name: PHPUnit
-          path: ./phpunit.xml
+          path: ./phpunit-log.xml
           reporter: java-junit
 
-      - name: Run infection tests
+  infection:
+    runs-on: ubuntu-latest
+    name: Phpunit and infection
+    needs: build
+    permissions:
+      checks: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Get Date
+        id: get-date
         run: |
-          echo "test"
-          composer ci-infection
-          cat /tmp/infection/phpunitConfiguration.initial.infection.xml
-          ls -alh /tmp/infection
-          echo "end test"
+          echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
         shell: bash
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-${{steps.get-date.outputs.date}}
+      - name: Run infection tests
+        run: composer ci-infection
 
   style:
     runs-on: ubuntu-latest
