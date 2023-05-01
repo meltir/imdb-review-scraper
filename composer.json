@@ -62,7 +62,7 @@
     },
     "require-dev": {
         "ext-intl": "*",
-        "phpunit/phpunit": "^9",
+        "phpunit/phpunit": "^9 || ^10",
         "mockery/mockery": "^1.5",
         "squizlabs/php_codesniffer": "^3.7",
         "phpmd/phpmd": "^2.13",
