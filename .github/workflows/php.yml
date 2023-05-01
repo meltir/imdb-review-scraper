@@ -93,8 +93,11 @@ jobs:
 
       - name: Run infection tests
         run: |
+          echo "test"
           composer ci-infection
           cat /tmp/infection/phpunitConfiguration.initial.infection.xml
+          ls -alh /tmp/infection
+          echo "end test"
         shell: bash
 
   style:
