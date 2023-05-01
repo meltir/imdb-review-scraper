@@ -49,7 +49,7 @@
         ],
 
         "ci-phpinsights": [
-            "@phpinsights --min-quality=95  --min-complexity=70 --min-architecture=80 --min-style=80 --format=github-action"
+            "@phpinsights --min-quality=95  --min-complexity=70 --min-architecture=80 --min-style=80"
         ],
 
         "ci-phpunit" : [
