@@ -1,4 +1,4 @@
-name: PHP Checks
+name: PHP Checks (composer,phpunit,infection,phpstan,phpcsfixer,phpinsights)
 
 on:
   pull_request:
@@ -52,7 +52,7 @@ jobs:
         uses: dorny/test-reporter@v1
         if: success() || failure()
         with:
-          name: PHPUnit
+          name: PHPUnit report
           path: ./phpunit-log.xml
           reporter: java-junit
 
@@ -125,7 +125,7 @@ jobs:
         uses: dorny/test-reporter@v1
         if: success() || failure()
         with:
-          name: php-cs-fixer
+          name: php-cs-fixer report
           path: ./php-cs-fixer.xml
           reporter: java-junit
 
