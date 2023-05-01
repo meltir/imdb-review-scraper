@@ -65,7 +65,7 @@
         ],
 
         "ci-phpstan": [
-            "@phpstan --error-format=github --xdebug 1"
+            "@phpstan --error-format=github --xdebug"
         ],
 
         "install-infection-phar" : [
