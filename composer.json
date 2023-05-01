@@ -57,7 +57,7 @@
         ],
 
         "ci-infection": [
-            "@infection --min-msi=95 --min-covered-msi=95 --logger-github"
+            "@infection --min-msi=95 --min-covered-msi=95 --debug"
         ],
 
         "ci-php-cs-fixer": [

@@ -92,7 +92,10 @@ jobs:
           reporter: java-junit
 
       - name: Run infection tests
-        run: composer ci-infection
+        run: |
+          composer ci-infection
+          cat /tmp/infection/phpunitConfiguration.initial.infection.xml
+        script: bash
 
   style:
     runs-on: ubuntu-latest
