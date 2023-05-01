@@ -1,3 +1,5 @@
+[![PHP Checks (composer,phpunit,infection,phpstan,phpcsfixer,phpinsights)](https://github.com/meltir/imdb-review-scraper/actions/workflows/php.yml/badge.svg)](https://github.com/meltir/imdb-review-scraper/actions/workflows/php.yml)  
+
 # What is this thing ?
 Hi, I'm Lukasz. I code. This is a thing I coded.  
 This is an experiment/exercise in building a composer package, and setting it up with a full deployment lifecycle.  
