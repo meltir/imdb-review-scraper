@@ -19,8 +19,8 @@ jobs:
           set +x
           sed --version
           #once the production version will come out, these will need to change
-          gh release list -L 1 | tail | sed -e 's/^\(.*\).Latest*/\1/'
-          LAST=`gh release list -L 1 | tail | sed -e 's/^\(.*\).Latest*/\1/'`
+          gh release list -L 1 | tail | cut -b 1-14 | xargs
+          LAST=`gh release list -L 1 | tail | cut -b 1-14 | xargs`
           echo "last=$LAST" >> "$GITHUB_OUTPUT"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
