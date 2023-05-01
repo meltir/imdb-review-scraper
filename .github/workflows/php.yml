@@ -183,5 +183,8 @@ jobs:
           path: vendor
           key: ${{ runner.os }}-${{steps.get-date.outputs.date}}
 
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
       - name: Run phpinsights
         run: composer ci-phpinsights
