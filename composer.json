@@ -25,32 +25,64 @@
             "Composer\\Config::disableProcessTimeout",
             "./vendor/bin/phpunit"
         ],
-        "infection-auto": [
+
+        "phpstan" : [
+            "./vendor/bin/phpstan"
+        ],
+
+        "infection": [
             "Composer\\Config::disableProcessTimeout",
-            "./vendor/bin/infection.phar --ignore-msi-with-no-mutations --only-covered --min-msi=95 --min-covered-msi=95"
+            "./vendor/bin/infection.phar --ignore-msi-with-no-mutations --only-covered"
         ],
-        "install-infection-phar" : [
-            "@php -r \"copy('https://github.com/infection/infection/releases/download/0.26.21/infection.phar', 'vendor/bin/infection.phar');\"",
-            "chmod +x vendor/bin/infection.phar"
-        ],
-        "install-git-hooks": [
-            "cp .github/hooks/* .git/hooks/",
-            "chmod +x .git/hooks/*"
-        ],
-        "post-install-cmd": [
-            "@install-infection-phar",
-            "@install-git-hooks"
-        ],
-        "php-cs-fixer-check": [
+
+        "php-cs-fixer": [
             "./vendor/bin/php-cs-fixer fix --using-cache=no --config=.php-cs-fixer.dist.php --dry-run --verbose --diff"
         ],
+
         "php-cs-fixer-fix": [
             "./vendor/bin/php-cs-fixer fix --using-cache=no --config=.php-cs-fixer.dist.php"
         ],
 
-        "phpstan-check" : [
-            "./vendor/bin/phpstan"
+        "phpinsights": [
+            "Composer\\Config::disableProcessTimeout",
+            "./vendor/bin/phpinsights"
+        ],
+
+        "ci-phpinsights": [
+            "@phpinsights --min-quality=95  --min-complexity=70 --min-architecture=80 --min-style=80 --format=github-action"
+        ],
+
+        "ci-phpunit" : [
+            "@phpunit --log-junit=./phpunit.xml"
+        ],
+
+        "ci-infection": [
+            "@infection --min-msi=95 --min-covered-msi=95 --logger-github"
+        ],
+
+        "ci-php-cs-fixer": [
+            "@php-cs-fixer --format=junit --show-progress=dots"
+        ],
+
+        "ci-phpstan": [
+            "@phpstan --error-format=github --xdebug 1"
+        ],
+
+        "install-infection-phar" : [
+            "@php -r \"copy('https://github.com/infection/infection/releases/download/0.26.21/infection.phar', 'vendor/bin/infection.phar');\"",
+            "chmod +x vendor/bin/infection.phar"
+        ],
+
+        "install-git-hooks": [
+            "cp .github/hooks/* .git/hooks/",
+            "chmod +x .git/hooks/*"
+        ],
+
+        "post-install-cmd": [
+            "@install-infection-phar",
+            "@install-git-hooks"
         ]
+
 
     },
     "minimum-stability": "stable",
@@ -64,14 +96,15 @@
         "ext-intl": "*",
         "phpunit/phpunit": "^9",
         "mockery/mockery": "^1.5",
-        "squizlabs/php_codesniffer": "^3.7",
         "phpmd/phpmd": "^2.13",
         "friendsofphp/php-cs-fixer": "^3.16",
-        "phpstan/phpstan": "^1.10"
+        "phpstan/phpstan": "^1.10",
+        "nunomaduro/phpinsights": "^2.8"
     },
     "config": {
         "allow-plugins": {
-            "infection/extension-installer": true
+            "infection/extension-installer": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true
         }
     }
 }

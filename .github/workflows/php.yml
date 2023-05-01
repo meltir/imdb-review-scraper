@@ -1,4 +1,4 @@
-name: PHP Composer
+name: PHP Checks
 
 on:
   pull_request:
@@ -79,10 +79,18 @@ jobs:
           key: ${{ runner.os }}-${{steps.get-date.outputs.date}}
 
       - name: Run phpunit tests
-        run: composer phpunit
+        run: composer ci-phpunit
+
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: PHPUnit
+          path: ./phpunit.xml
+          reporter: java-junit
 
       - name: Run infection tests
-        run: composer infection-auto
+        run: composer ci-infection
 
   style:
     runs-on: ubuntu-latest
@@ -109,7 +117,18 @@ jobs:
           key: ${{ runner.os }}-${{steps.get-date.outputs.date}}
 
       - name: Run php-cs-fixer checks
-        run: composer php-cs-fixer-check
+        run: |
+          composer ci-php-cs-fixer 1> php-cs-fixer.xml
+        shell: bash
+
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: php-cs-fixer
+          path: ./php-cs-fixer.xml
+          reporter: java-junit
+
   standards:
     runs-on: ubuntu-latest
     name: Check standards
@@ -135,4 +154,30 @@ jobs:
           key: ${{ runner.os }}-${{steps.get-date.outputs.date}}
 
       - name: Run phpstan tests
-        run: composer phpstan-check
+        run: composer ci-phpstan
+  insights:
+    runs-on: ubuntu-latest
+    name: Check insights
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
+        shell: bash
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-${{steps.get-date.outputs.date}}
+
+      - name: Run phpinsights
+        run: composer ci-phpinsights
