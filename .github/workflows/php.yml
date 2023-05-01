@@ -53,7 +53,7 @@ jobs:
 
   unit:
     runs-on: ubuntu-latest
-    name: Phpunit and infection
+    name: Phpunit
     needs: build
     permissions:
       checks: write
@@ -90,7 +90,7 @@ jobs:
 
   infection:
     runs-on: ubuntu-latest
-    name: Phpunit and infection
+    name: Infection
     needs: build
     permissions:
       checks: write
