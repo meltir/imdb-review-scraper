@@ -58,6 +58,8 @@ jobs:
     runs-on: ubuntu-latest
     name: Phpunit and infection
     needs: build
+    permissions:
+      checks: write
     steps:
       - uses: actions/checkout@v3
 
@@ -96,6 +98,8 @@ jobs:
     runs-on: ubuntu-latest
     name: Check coding style
     needs: build
+    permissions:
+      checks: write
     steps:
       - uses: actions/checkout@v3
 
