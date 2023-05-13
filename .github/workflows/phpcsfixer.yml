@@ -1,5 +1,4 @@
-name: Composer checks
-
+name: PHP Style checks
 on:
   pull_request:
     branches: [ "main" ]
@@ -8,10 +7,9 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    name: Platform checks
+  style:
     runs-on: ubuntu-latest
-    #    runs-on: self-hosted
+    name: Check coding style
     permissions:
       checks: write
     steps:
@@ -22,9 +20,6 @@ jobs:
         with:
           php-version: '8.2'
 
-      - name: Validate composer.json and composer.lock
-        run: composer validate --strict --no-check-lock
-
       - name: Get Date
         id: get-date
         run: |
@@ -33,7 +28,6 @@ jobs:
 
       - name: Cache Composer dependencies
         uses: actions/cache@v3
-        id: cache
         with:
           path: vendor
           key: ${{ runner.os }}-${{steps.get-date.outputs.date}}
@@ -42,13 +36,15 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: composer install --prefer-dist --no-progress
 
-      - name: Check PHP
-        run: composer check-platform-reqs
+      - name: Run php-cs-fixer checks
+        run: |
+          composer ci-php-cs-fixer 1> php-cs-fixer.xml
+        shell: bash
 
-
-      - name: Cache Composer dependencies
-        uses: actions/cache@v3
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
         with:
-          path: vendor
-          key: ${{ runner.os }}-${{steps.get-date.outputs.date}}
-
+          name: php-cs-fixer report
+          path: ./php-cs-fixer.xml
+          reporter: java-junit

@@ -1,5 +1,4 @@
-name: Composer checks
-
+name: PHPstan checks
 on:
   pull_request:
     branches: [ "main" ]
@@ -8,12 +7,9 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    name: Platform checks
+  standards:
     runs-on: ubuntu-latest
-    #    runs-on: self-hosted
-    permissions:
-      checks: write
+    name: Check standards
     steps:
       - uses: actions/checkout@v3
 
@@ -21,9 +17,6 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-
-      - name: Validate composer.json and composer.lock
-        run: composer validate --strict --no-check-lock
 
       - name: Get Date
         id: get-date
@@ -42,13 +35,5 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: composer install --prefer-dist --no-progress
 
-      - name: Check PHP
-        run: composer check-platform-reqs
-
-
-      - name: Cache Composer dependencies
-        uses: actions/cache@v3
-        with:
-          path: vendor
-          key: ${{ runner.os }}-${{steps.get-date.outputs.date}}
-
+      - name: Run phpstan tests
+        run: composer ci-phpstan
