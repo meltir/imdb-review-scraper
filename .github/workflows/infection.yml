@@ -36,6 +36,9 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
 
+      - name: Install infection
+        run: composer install-infection-phar
+
       - name: Run infection tests
         run: composer ci-infection
 
