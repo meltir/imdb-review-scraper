@@ -1,3 +1,4 @@
+name: PHPInsights checks
 on:
   pull_request:
     branches: [ "main" ]

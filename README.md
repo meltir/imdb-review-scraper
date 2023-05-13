@@ -1,4 +1,9 @@
-[![PHP Checks (composer,phpunit,infection,phpstan,phpcsfixer,phpinsights)](https://github.com/meltir/imdb-review-scraper/actions/workflows/php.yml/badge.svg)](https://github.com/meltir/imdb-review-scraper/actions/workflows/php.yml)  
+[![Composer checks](https://github.com/meltir/imdb-review-scraper/actions/workflows/php.yml/badge.svg)](https://github.com/meltir/imdb-review-scraper/actions/workflows/php.yml) 
+[![Infection tests](https://github.com/meltir/imdb-review-scraper/actions/workflows/infection.yml/badge.svg)](https://github.com/meltir/imdb-review-scraper/actions/workflows/infection.yml) 
+[![PHP cs fixer check](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpcsfixer.yml/badge.svg)](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpcsfixer.yml) 
+[![PHPinsights](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpinsights.yml/badge.svg)](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpinsights.yml) 
+[![PHPStan](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpstan.yml/badge.svg)](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpstan.yml)  [![PHPUnit](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpunit.yml/badge.svg)](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpunit.yml)  
+
 
 # What is this thing ?
 Hi, I'm Lukasz. I code. This is a thing I coded.  

@@ -1,4 +1,4 @@
-name: PHP phpstan checks
+name: PHPstan checks
 on:
   pull_request:
     branches: [ "main" ]
