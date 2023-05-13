@@ -32,6 +32,10 @@ jobs:
           path: vendor
           key: ${{ runner.os }}-${{steps.get-date.outputs.date}}
 
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: composer install --prefer-dist --no-progress
+
       - name: Run php-cs-fixer checks
         run: |
           composer ci-php-cs-fixer 1> php-cs-fixer.xml
