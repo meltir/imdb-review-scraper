@@ -1,5 +1,4 @@
-name: Composer checks
-
+name: Infection mutation tests
 on:
   pull_request:
     branches: [ "main" ]
@@ -7,11 +6,12 @@ on:
 permissions:
   contents: read
 
+
 jobs:
-  build:
-    name: Platform checks
+  infection:
     runs-on: ubuntu-latest
-    #    runs-on: self-hosted
+    name: Infection
+    needs: build
     permissions:
       checks: write
     steps:
@@ -22,9 +22,6 @@ jobs:
         with:
           php-version: '8.2'
 
-      - name: Validate composer.json and composer.lock
-        run: composer validate --strict --no-check-lock
-
       - name: Get Date
         id: get-date
         run: |
@@ -33,22 +30,10 @@ jobs:
 
       - name: Cache Composer dependencies
         uses: actions/cache@v3
-        id: cache
         with:
           path: vendor
           key: ${{ runner.os }}-${{steps.get-date.outputs.date}}
+      - name: Run infection tests
+        run: composer ci-infection
 
-      - name: Install dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: composer install --prefer-dist --no-progress
-
-      - name: Check PHP
-        run: composer check-platform-reqs
-
-
-      - name: Cache Composer dependencies
-        uses: actions/cache@v3
-        with:
-          path: vendor
-          key: ${{ runner.os }}-${{steps.get-date.outputs.date}}
 
