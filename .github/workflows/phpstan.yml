@@ -10,7 +10,6 @@ jobs:
   standards:
     runs-on: ubuntu-latest
     name: Check standards
-    needs: build
     steps:
       - uses: actions/checkout@v3
 

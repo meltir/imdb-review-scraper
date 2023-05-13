@@ -9,7 +9,6 @@ jobs:
   insights:
     runs-on: ubuntu-latest
     name: Check insights
-    needs: build
     steps:
       - uses: actions/checkout@v3
 

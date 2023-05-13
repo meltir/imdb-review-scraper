@@ -10,7 +10,6 @@ jobs:
   style:
     runs-on: ubuntu-latest
     name: Check coding style
-    needs: build
     permissions:
       checks: write
     steps:
