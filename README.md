@@ -1,13 +1,13 @@
-# Christmas tree
+# Traffic lights
 
  | Checks                                                                     | Badge                                                                                                                                                                                             | 
  |----------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| 
  | Composer validation                                                        | [![Composer checks](https://github.com/meltir/imdb-review-scraper/actions/workflows/php.yml/badge.svg)](https://github.com/meltir/imdb-review-scraper/actions/workflows/php.yml)                  | 
- | PHP Cs Fixer ([@Symfony, @PHP82Migration](.php-cs-fixer.dist.php#L11))     | [![PHP cs fixer check](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpcsfixer.yml/badge.svg)](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpcsfixer.yml) |
+ | PHP Cs Fixer ([@Symfony, @PHP82Migration](.php-cs-fixer.dist.php#L11-L12)) | [![PHP cs fixer check](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpcsfixer.yml/badge.svg)](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpcsfixer.yml) |
  | Infection Mutation tests ([Min MSI>95%, Min C MSI>95%](composer.json#L60)) | [![Infection tests](https://github.com/meltir/imdb-review-scraper/actions/workflows/infection.yml/badge.svg)](https://github.com/meltir/imdb-review-scraper/actions/workflows/infection.yml)      |
  | PHPinsights ([Q>=95,C>=70,A>=80,S>=80](composer.json#L52))                 | [![PHPinsights](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpinsights.yml/badge.svg)](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpinsights.yml)      |
  | PHPStan ([L9](phpstan.neon#L2))                                            | [![PHPStan](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpstan.yml/badge.svg)](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpstan.yml)                  |
- | PHPUnit                                                                    |  [![PHPUnit](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpunit.yml/badge.svg)](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpunit.yml) |
+ | PHPUnit                                                                    | [![PHPUnit](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpunit.yml/badge.svg)](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpunit.yml)                  | 
 
 # What is this thing ?
 Hi, I'm Lukasz. I code. This is a thing I coded.  
