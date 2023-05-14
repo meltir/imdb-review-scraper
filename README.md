@@ -1,13 +1,13 @@
-# Traffic lights
+# :vertical_traffic_light: :christmas_tree:
 
  | Checks                                                                         | Badge                                                                                                                                                                                             | 
  |--------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| 
- | Composer validation ([composer.json](composer.json))                           | [![Composer checks](https://github.com/meltir/imdb-review-scraper/actions/workflows/php.yml/badge.svg)](https://github.com/meltir/imdb-review-scraper/actions/workflows/php.yml)                  | 
- | PHP Cs Fixer ([@Symfony, @PHP82Migration](.php-cs-fixer.dist.php#L11-L12))     | [![PHP cs fixer check](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpcsfixer.yml/badge.svg)](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpcsfixer.yml) |
- | Infection Mutation tests ([Min MSI>95%, Min C MSI>95%](composer.json#L66-L68)) | [![Infection tests](https://github.com/meltir/imdb-review-scraper/actions/workflows/infection.yml/badge.svg)](https://github.com/meltir/imdb-review-scraper/actions/workflows/infection.yml)      |
- | PHPinsights ([Q>=95,C>=70,A>=80,S>=80](composer.json#L58-L60))                 | [![PHPinsights](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpinsights.yml/badge.svg)](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpinsights.yml)      |
- | PHPStan ([L9](phpstan.neon#L2))                                                | [![PHPStan](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpstan.yml/badge.svg)](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpstan.yml)                  |
- | PHPUnit ([phpunit.xml](phpunit.xml))                                           | [![PHPUnit](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpunit.yml/badge.svg)](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpunit.yml)                  | 
+ | Composer validation ([composer.json](composer.json))                           | [![Composer checks](https://github.com/meltir/imdb-review-scraper/actions/workflows/php.yml/badge.svg?branch=main)](https://github.com/meltir/imdb-review-scraper/actions/workflows/php.yml)      | 
+ | PHP Cs Fixer ([@Symfony, @PHP82Migration](.php-cs-fixer.dist.php#L11-L12))     | [![PHP cs fixer check](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpcsfixer.yml/badge.svg?branch=main)](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpcsfixer.yml) |
+ | Infection Mutation tests ([Min MSI>95%, Min C MSI>95%](composer.json#L66-L68)) | [![Infection tests](https://github.com/meltir/imdb-review-scraper/actions/workflows/infection.yml/badge.svg?branch=main)](https://github.com/meltir/imdb-review-scraper/actions/workflows/infection.yml)      |
+ | PHPinsights ([Q>=95,C>=70,A>=80,S>=80](composer.json#L58-L60))                 | [![PHPinsights](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpinsights.yml/badge.svg?branch=main)](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpinsights.yml)      |
+ | PHPStan ([L9](phpstan.neon#L2))                                                | [![PHPStan](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpstan.yml/badge.svg?branch=main)](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpstan.yml)                  |
+ | PHPUnit ([phpunit.xml](phpunit.xml))                                           | [![PHPUnit](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpunit.yml/badge.svg?branch=main)](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpunit.yml)                  | 
 
 # What is this thing ?
 Hi, I'm Lukasz. I code. This is a thing I coded.  
