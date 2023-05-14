@@ -3,6 +3,20 @@
     "description": "Scrape an imdb users reviews and ratings from their public imdb profile.",
     "type": "library",
     "license": "proprietary",
+    "readme": "README.md",
+    "authors": [
+        {
+            "name": "Lukasz Andrzejak",
+            "email": "packagist@meltir.com",
+            "homepage": "https://www.meltir.com"
+        }
+    ],
+    "homepage": "https://github.com/meltir/imdb-review-scraper",
+    "support": {
+        "email": "dev@null.org",
+        "issues": "https://github.com/meltir/imdb-review-scraper/issues"
+    },
+
     "autoload": {
         "psr-4": {
             "Meltir\\ImdbRatingsScraper\\": "src"
@@ -13,13 +27,6 @@
             "Meltir\\ImdbRatingsScraper\\Tests\\": "tests"
         }
     },
-    "authors": [
-        {
-            "name": "Lukasz Andrzejak",
-            "email": "packagist@meltir.com",
-            "homepage": "https://www.meltir.com"
-        }
-    ],
     "scripts": {
         "phpunit": [
             "Composer\\Config::disableProcessTimeout",
@@ -96,7 +103,6 @@
         "ext-intl": "*",
         "phpunit/phpunit": "^9",
         "mockery/mockery": "^1.5",
-        "phpmd/phpmd": "^2.13",
         "friendsofphp/php-cs-fixer": "^3.16",
         "phpstan/phpstan": "^1.10",
         "nunomaduro/phpinsights": "^2.8"

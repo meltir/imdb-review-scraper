@@ -2,6 +2,9 @@ name: PHPInsights checks
 on:
   pull_request:
     branches: [ "main" ]
+  push:
+    branches: [ "main" ]
+
 
 permissions:
   contents: read
@@ -18,20 +21,28 @@ jobs:
         with:
           php-version: '8.2'
 
-      - name: Get Date
-        id: get-date
+      - name: Cache hash
+        id: get-cache-hash
         run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
+          COMPOSER_HASH=`cat composer.json | sha256sum | head -c 40`
+          DATE=`date -u "+%Y%m%d"`
+          echo "hash=$COMPOSER_HASH$DATE" >> "$GITHUB_OUTPUT"
         shell: bash
 
       - name: Cache Composer dependencies
         uses: actions/cache@v3
         with:
           path: vendor
-          key: ${{ runner.os }}-${{steps.get-date.outputs.date}}
+          key: ${{ runner.os }}-${{steps.get-cache-hash.outputs.hash}}
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
 
       - name: Run phpinsights
         run: composer ci-phpinsights
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-${{steps.get-cache-hash.outputs.hash}}
