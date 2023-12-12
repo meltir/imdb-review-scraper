@@ -14,12 +14,14 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\HttpFactory;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Meltir\ImdbRatingsScraper\Exception\Scraper as ScraperException;
 use Meltir\ImdbRatingsScraper\Item;
 use Meltir\ImdbRatingsScraper\Scraper;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\RequestFactoryInterface;
 
 class ScraperTest extends TestCase
 {
@@ -52,6 +54,11 @@ class ScraperTest extends TestCase
         );
     }
 
+    private function getRequestFactory(): RequestFactoryInterface
+    {
+        return new HttpFactory();
+    }
+
     private function getClient(array $responses = null): Client
     {
         if (is_null($responses)) {
@@ -72,7 +79,7 @@ class ScraperTest extends TestCase
 
     public function testGetNextPage()
     {
-        $scraper = new Scraper($this->client, 'foobar');
+        $scraper = new Scraper($this->client, $this->getRequestFactory(), 'foobar');
         $scraper->getMovies();
         $this->assertSame('https://www.imdb.com/NEXTPAGE', $scraper->getNextPage());
     }
@@ -99,7 +106,7 @@ class ScraperTest extends TestCase
         $movie3 = new Item('tt2435850', 7, $user);
         $movie4 = new Item('tt0251282', 8, $user);
         $client = $this->getClient([$r1, $r2]);
-        $scraper = new Scraper($client, $user);
+        $scraper = new Scraper($client, $this->getRequestFactory(), $user);
         $this->assertEquals([$movie1, $movie2, $movie3, $movie4], $scraper->getAllMovies());
         $this->assertSame('https://www.imdb.com/user/foobar/ratings', (string) $this->container[0]['request']->getUri());
         $this->assertSame('https://www.imdb.com/NEXTPAGE', (string) $this->container[1]['request']->getUri());
@@ -108,7 +115,7 @@ class ScraperTest extends TestCase
     public function testSetUrl()
     {
         $user = 'foobar';
-        $scraper = new Scraper($this->client, $user);
+        $scraper = new Scraper($this->client, $this->getRequestFactory(), $user);
         $scraper->setUrl('foobar');
         $scraper->getMovies();
         $this->assertSame('foobar', (string) $this->container[0]['request']->getUri());
@@ -117,7 +124,7 @@ class ScraperTest extends TestCase
     public function testGetMovies()
     {
         $user = 'foobar';
-        $scraper = new Scraper($this->client, $user);
+        $scraper = new Scraper($this->client, $this->getRequestFactory(), $user);
         $movie1 = new Item('tt2435850', 7, $user);
         $movie2 = new Item('tt0251282', 8, $user);
         $this->assertEquals([$movie1, $movie2], $scraper->getMovies());
@@ -125,7 +132,7 @@ class ScraperTest extends TestCase
 
     public function testConstructor()
     {
-        $scraper = new Scraper($this->client, 'foobar');
+        $scraper = new Scraper($this->client, $this->getRequestFactory(), 'foobar');
         $scraper->getMovies();
         $this->assertSame(
             'https://www.imdb.com/user/foobar/ratings',
@@ -143,7 +150,7 @@ class ScraperTest extends TestCase
             )
         );
         $client = $this->getClient([$request]);
-        $scraper = new Scraper($client, 'foobar');
+        $scraper = new Scraper($client, $this->getRequestFactory(), 'foobar');
         $this->expectException(ScraperException::class);
         $this->expectExceptionCode(ScraperException::CODE_MAP['MOVIE_FAILED']);
         $this->expectExceptionMessage('Could not scrape this movie');
@@ -153,11 +160,11 @@ class ScraperTest extends TestCase
     public function testGuzzleException()
     {
         $client = \Mockery::mock(Client::class);
-        $client->expects('request')->andThrow(new RequestException('Boom no connect !', new Request('GET', 'test')));
+        $client->expects('sendRequest')->andThrow(new RequestException('Boom no connect !', new Request('GET', 'test')));
         $this->expectException(ScraperException::class);
         $this->expectExceptionCode(ScraperException::CODE_MAP['COULD_NOT_CONNECT']);
         $this->expectExceptionMessage('Could not connect to imdb');
-        $scraper = new Scraper($client, 'foobar');
+        $scraper = new Scraper($client, $this->getRequestFactory(), 'foobar');
         $scraper->getMovies();
     }
 }

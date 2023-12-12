@@ -34,10 +34,11 @@ declare(strict_types=1);
 
 namespace Meltir\ImdbRatingsScraper;
 
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Exception\GuzzleException;
 use Meltir\ImdbRatingsScraper\Exception\Scraper as ScraperException;
 use Meltir\ImdbRatingsScraper\Interface\Scraper as ScraperInterface;
+use Psr\Http\Client\ClientExceptionInterface;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**
@@ -96,10 +97,10 @@ class Scraper implements ScraperInterface
         '@.*title/(.*)/.*@';
 
     /**
-     * @param ClientInterface $client http client to use (guzzle)
+     * @param ClientInterface $client http client to use
      * @param string          $user   imdb user id
      */
-    public function __construct(protected ClientInterface $client, protected string $user)
+    public function __construct(protected ClientInterface $client, protected RequestFactoryInterface $requestFactory, protected string $user)
     {
         $this->url = self::IMDB_RATINGS_URI_PREFIX.$user.self::IMDB_RATINGS_URI_SUFFIX;
     }
@@ -121,15 +122,13 @@ class Scraper implements ScraperInterface
     private function getUrl(): Crawler
     {
         try {
+            $request = $this->requestFactory->createRequest('GET', $this->url);
+
             return new Crawler(
-                node: $this
-                    ->client
-                    ->request('GET', $this->url)
-                    ->getBody()
-                    ->getContents(),
+                node: $this->client->sendRequest($request)->getBody()->getContents(),
                 uri: self::IMDB_BASE_URI
             );
-        } catch (GuzzleException $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new ScraperException(message: 'Could not connect to imdb', code: ScraperException::CODE_MAP['COULD_NOT_CONNECT'], previous: $e);
         }
     }

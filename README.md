@@ -10,10 +10,11 @@
  | PHPUnit ([phpunit.xml](phpunit.xml))                                           | [![PHPUnit](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpunit.yml/badge.svg?branch=main)](https://github.com/meltir/imdb-review-scraper/actions/workflows/phpunit.yml)                  | 
 
 # What is this thing ?
-Hi, I'm Lukasz. I code. This is a thing I coded.  
+Hi, I'm [Lukasz](https://meltir.com). I code. This is a thing I coded.  
 This is an experiment/exercise in building a composer package, and setting it up with a full deployment lifecycle.  
 
-It is a scraper that lookups up an IMDB users reviews, scrapes them, transforms them and spits them out as objects.  
+It is a scraper that lookups up an IMDB users reviews, scrapes them, transforms them and spits them out as objects.    
+You have to choose your own [psr17](https://www.php-fig.org/psr/psr-17/) request factory and [psr18](https://www.php-fig.org/psr/psr-18/) client.  
 
 You should be using [the official IMDB api](https://developer.imdb.com/).
 
@@ -26,7 +27,7 @@ Quick and dirty:
 
 require 'vendor/autoload.php';
 
-$movies = new Meltir\ImdbRatingsScraper\Scraper(new \GuzzleHttp\Client(), 'ur20552756');
+$movies = new Meltir\ImdbRatingsScraper\Scraper(new \GuzzleHttp\Client(), new \GuzzleHttp\Psr7\HttpFactory(), 'ur20552756');
 var_dump($movies->getMovies());
 ```
 

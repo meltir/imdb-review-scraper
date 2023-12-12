@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Meltir\ImdbRatingsScraper\Interface;
 
-use GuzzleHttp\ClientInterface;
 use Meltir\ImdbRatingsScraper\Exception\Scraper as ScraperException;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 
 /**
  * Interface for the review scraper.
@@ -15,10 +16,11 @@ use Meltir\ImdbRatingsScraper\Exception\Scraper as ScraperException;
 interface Scraper
 {
     /**
-     * @param ClientInterface $client http client to use (guzzle)
-     * @param string          $user   imdb user id
+     * @param ClientInterface         $client         psr18 http client to use
+     * @param RequestFactoryInterface $requestFactory psr17 request factory to use
+     * @param string                  $user           imdb user id
      */
-    public function __construct(ClientInterface $client, string $user);
+    public function __construct(ClientInterface $client, RequestFactoryInterface $requestFactory, string $user);
 
     /**
      * Set the url of the review page to be scanned.
