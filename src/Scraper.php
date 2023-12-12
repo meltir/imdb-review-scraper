@@ -27,7 +27,8 @@ declare(strict_types=1);
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * @license this is mine and nobody has my permission to use it or republish it in parts or whole anywhere ever.
+ * @license this is mine and nobody has my permission to use it or
+ *          republish it in parts or whole anywhere ever.
  * @author Lukasz Andrzejak <spam@meltir.com>
  * @copyright (C) 2022 Lukasz Andrzejak <spam@meltir.com>
  */
@@ -44,19 +45,11 @@ use Symfony\Component\DomCrawler\Crawler;
 /**
  * IMDB user review scraper
  * Only uses publicly available information from non-protected user pages.
+ *
+ * @todo isolate crawler into its own class, find the line between hydrating objects and adding useless complexity
  */
 class Scraper implements ScraperInterface
 {
-    /**
-     * @var string url currently scraped
-     */
-    protected string $url;
-
-    /**
-     * @var Crawler page currently parsed
-     */
-    protected Crawler $current_page;
-
     /**
      * Where the user profile lives on imdb.
      */
@@ -95,13 +88,25 @@ class Scraper implements ScraperInterface
 
     protected const REGEX_IMDB_ID = /* @lang RegExp */
         '@.*title/(.*)/.*@';
+    /**
+     * @var string url currently scraped
+     */
+    protected string $url;
+
+    /**
+     * @var Crawler page currently parsed
+     */
+    protected Crawler $current_page;
 
     /**
      * @param ClientInterface $client http client to use
      * @param string          $user   imdb user id
      */
-    public function __construct(protected ClientInterface $client, protected RequestFactoryInterface $requestFactory, protected string $user)
-    {
+    public function __construct(
+        protected ClientInterface $client,
+        protected RequestFactoryInterface $requestFactory,
+        protected string $user
+    ) {
         $this->url = self::IMDB_RATINGS_URI_PREFIX.$user.self::IMDB_RATINGS_URI_SUFFIX;
     }
 
@@ -112,6 +117,67 @@ class Scraper implements ScraperInterface
     public function setUrl(string $url): void
     {
         $this->url = $url;
+    }
+
+    /**
+     * Get all movies from all pages. This can timeout !
+     *
+     * @return array<Item>
+     *
+     * @throws ScraperException
+     */
+    public function getAllMovies(): array
+    {
+        $movies = $this->getMovies();
+        while ($url = $this->getNextPage()) {
+            $this->setUrl($url);
+            $movies = array_merge($movies, $this->getMovies());
+        }
+
+        return $movies;
+    }
+
+    /**
+     * Process a single page of reviews.
+     *
+     * @return array<Item>
+     *
+     * @throws ScraperException
+     */
+    public function getMovies(): array
+    {
+        $this->current_page = $this->getUrl();
+        $item = $this->current_page->filter(self::FILTER_RATING_CONTAINER);
+
+        $movies = [];
+        try {
+            while ($movie = $this->processItem($item)) {
+                $movies[] = $movie;
+                $item = $item->nextAll();
+            }
+        } catch (ScraperException $e) {
+            if ($e->getCode() !== ScraperException::CODE_MAP['END_OF_PAGE']) {
+                throw $e;
+            }
+        }
+
+        return $movies;
+    }
+
+    /**
+     * Get the url of the next page, or exception if not found.
+     */
+    public function getNextPage(): string|false
+    {
+        try {
+            return $this
+                ->current_page
+                ->filter(self::FILTER_NEXT_PAGE)
+                ->link()
+                ->getUri();
+        } catch (\InvalidArgumentException $e) {
+            return false;
+        }
     }
 
     /**
@@ -159,66 +225,5 @@ class Scraper implements ScraperInterface
         }
 
         return $movie;
-    }
-
-    /**
-     * Get all movies from all pages. This can timeout !
-     *
-     * @return Item[]
-     *
-     * @throws ScraperException
-     */
-    public function getAllMovies(): array
-    {
-        $movies = $this->getMovies();
-        while ($url = $this->getNextPage()) {
-            $this->setUrl($url);
-            $movies = array_merge($movies, $this->getMovies());
-        }
-
-        return $movies;
-    }
-
-    /**
-     * Process a single page of reviews.
-     *
-     * @return Item[]
-     *
-     * @throws ScraperException
-     */
-    public function getMovies(): array
-    {
-        $this->current_page = $this->getUrl();
-        $item = $this->current_page->filter(self::FILTER_RATING_CONTAINER);
-
-        $movies = [];
-        try {
-            while ($movie = $this->processItem($item)) {
-                $movies[] = $movie;
-                $item = $item->nextAll();
-            }
-        } catch (ScraperException $e) {
-            if ($e->getCode() !== ScraperException::CODE_MAP['END_OF_PAGE']) {
-                throw $e;
-            }
-        }
-
-        return $movies;
-    }
-
-    /**
-     * Get the url of the next page, or exception if not found.
-     */
-    public function getNextPage(): string|false
-    {
-        try {
-            return $this
-                ->current_page
-                ->filter(self::FILTER_NEXT_PAGE)
-                ->link()
-                ->getUri();
-        } catch (\InvalidArgumentException $e) {
-            return false;
-        }
     }
 }

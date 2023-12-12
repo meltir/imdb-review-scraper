@@ -1,8 +1,8 @@
 <?php
 
-namespace Meltir\ImdbRatingsScraper\Exception;
+declare(strict_types=1);
 
-use Exception;
+namespace Meltir\ImdbRatingsScraper\Exception;
 
 class Scraper extends \Exception
 {

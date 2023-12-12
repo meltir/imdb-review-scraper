@@ -13,15 +13,19 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
 
 
-RUN apk add --virtual .phpize-deps autoconf g++ make linux-headers \
-    && pecl install xdebug && docker-php-ext-enable xdebug \
-    && apk del .phpize-deps
+#RUN apk add --virtual .phpize-deps autoconf g++ make linux-headers \
+#    && pecl install xdebug && docker-php-ext-enable xdebug \
+#    && apk del .phpize-deps
 
 RUN apk add icu-dev icu \
     && docker-php-ext-configure intl \
     && docker-php-ext-install intl \
     && apk del icu-dev
 
+RUN apk add oniguruma-dev \
+    && docker-php-ext-configure mbstring \
+    && docker-php-ext-install mbstring \
+    && apk del oniguruma-dev
 
 WORKDIR /var/www/html
 

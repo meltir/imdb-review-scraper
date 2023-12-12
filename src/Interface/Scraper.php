@@ -31,7 +31,7 @@ interface Scraper
     /**
      * Get all movies from all pages. This can timeout !
      *
-     * @return Item[]
+     * @return array<Item>
      *
      * @throws ScraperException
      */
@@ -40,7 +40,7 @@ interface Scraper
     /**
      * Process a single page of reviews.
      *
-     * @return Item[]
+     * @return array<Item>
      *
      * @throws ScraperException
      */

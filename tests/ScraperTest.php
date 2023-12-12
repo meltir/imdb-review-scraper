@@ -108,7 +108,10 @@ class ScraperTest extends TestCase
         $client = $this->getClient([$r1, $r2]);
         $scraper = new Scraper($client, $this->getRequestFactory(), $user);
         $this->assertEquals([$movie1, $movie2, $movie3, $movie4], $scraper->getAllMovies());
-        $this->assertSame('https://www.imdb.com/user/foobar/ratings', (string) $this->container[0]['request']->getUri());
+        $this->assertSame(
+            'https://www.imdb.com/user/foobar/ratings',
+            (string) $this->container[0]['request']->getUri()
+        );
         $this->assertSame('https://www.imdb.com/NEXTPAGE', (string) $this->container[1]['request']->getUri());
     }
 
@@ -160,7 +163,14 @@ class ScraperTest extends TestCase
     public function testGuzzleException()
     {
         $client = \Mockery::mock(Client::class);
-        $client->expects('sendRequest')->andThrow(new RequestException('Boom no connect !', new Request('GET', 'test')));
+        $client
+            ->expects('sendRequest')
+            ->andThrow(
+                new RequestException(
+                    'Boom no connect !',
+                    new Request('GET', 'test')
+                )
+            );
         $this->expectException(ScraperException::class);
         $this->expectExceptionCode(ScraperException::CODE_MAP['COULD_NOT_CONNECT']);
         $this->expectExceptionMessage('Could not connect to imdb');
