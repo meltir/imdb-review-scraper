@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Meltir\ImdbRatingsScraper\Interface;
 
 /**
@@ -9,10 +11,10 @@ namespace Meltir\ImdbRatingsScraper\Interface;
  * @property int    $rating   user rating
  * @property string $reviewer review author
  */
-interface ItemInterface
+interface Item
 {
     /**
      * Hook for decorators.
      */
-    public function format(): ItemInterface;
+    public function format(): Item;
 }

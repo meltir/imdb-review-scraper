@@ -34,7 +34,7 @@
         ],
 
         "phpstan" : [
-            "./vendor/bin/phpstan"
+            "./vendor/bin/phpstan analyse"
         ],
 
         "infection": [
@@ -76,7 +76,7 @@
         ],
 
         "install-infection-phar" : [
-            "@php -r \"copy('https://github.com/infection/infection/releases/download/0.26.21/infection.phar', 'vendor/bin/infection.phar');\"",
+            "@php -r \"copy('https://github.com/infection/infection/releases/download/0.27.9/infection.phar', 'vendor/bin/infection.phar');\"",
             "chmod +x vendor/bin/infection.phar"
         ],
 
@@ -95,17 +95,17 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=8.2",
-        "guzzlehttp/guzzle": "^7.5",
-        "symfony/dom-crawler": "^6.2",
-        "symfony/css-selector": "^6.2"
+        "guzzlehttp/guzzle": "^7.8",
+        "symfony/dom-crawler": "^7.0",
+        "symfony/css-selector": "^7.0"
     },
     "require-dev": {
         "ext-intl": "*",
-        "phpunit/phpunit": "^9",
-        "mockery/mockery": "^1.5",
-        "friendsofphp/php-cs-fixer": "^3.16",
+        "phpunit/phpunit": "^10.5",
+        "mockery/mockery": "^1.6",
+        "friendsofphp/php-cs-fixer": "^3.41",
         "phpstan/phpstan": "^1.10",
-        "nunomaduro/phpinsights": "^2.8"
+        "nunomaduro/phpinsights": "^2.11"
     },
     "config": {
         "allow-plugins": {
