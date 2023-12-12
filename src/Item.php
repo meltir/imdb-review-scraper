@@ -1,12 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Meltir\ImdbRatingsScraper;
 
-use Meltir\ImdbRatingsScraper\Interface\ItemInterface;
+use Meltir\ImdbRatingsScraper\Interface\Item as ItemInterface;
 
 /**
- * {@inheritDoc}
- *
  * @infection-ignore-all
  */
 class Item implements ItemInterface
@@ -15,7 +15,7 @@ class Item implements ItemInterface
     {
     }
 
-    public function format(): ItemInterface
+    public function format(): Item
     {
         return $this;
     }

@@ -16,7 +16,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Meltir\ImdbRatingsScraper\Exception\ScraperException;
+use Meltir\ImdbRatingsScraper\Exception\Scraper as ScraperException;
 use Meltir\ImdbRatingsScraper\Item;
 use Meltir\ImdbRatingsScraper\Scraper;
 use PHPUnit\Framework\TestCase;
@@ -52,7 +52,7 @@ class ScraperTest extends TestCase
         );
     }
 
-    private function getClient(?array $responses = null): Client
+    private function getClient(array $responses = null): Client
     {
         if (is_null($responses)) {
             $responses = [$this->getSingleResponse()];

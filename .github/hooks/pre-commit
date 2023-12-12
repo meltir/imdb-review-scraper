@@ -8,8 +8,8 @@ if [ -z "$FILES" ]
 then
     echo "No php files found in commit."
 else
-    echo "composer php-cs-fixer-check"
-    MSYS_NO_PATHCONV=1 docker-compose run -T --rm php /usr/bin/composer php-cs-fixer-check ${FILES}
+    echo "composer php-cs-fixer"
+    MSYS_NO_PATHCONV=1 docker-compose run -T --rm php /usr/bin/composer php-cs-fixer ${FILES}
     if [ $? -ne 0 ];
     then
       echo "Failed php-cs-fixer check"
@@ -23,8 +23,8 @@ if [ -z "$FILES" ]
 then
     echo "No php files to check against phpstan."
 else
-    echo "composer phpstan-check"
-    MSYS_NO_PATHCONV=1 docker-compose run -T --rm php /usr/bin/composer phpstan-check ${FILES}
+    echo "composer phpstan"
+    MSYS_NO_PATHCONV=1 docker-compose run -T --rm php /usr/bin/composer phpstan ${FILES}
     if [ $? -ne 0 ];
     then
       echo "Failed phpstan check"

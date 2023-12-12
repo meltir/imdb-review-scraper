@@ -36,9 +36,8 @@ namespace Meltir\ImdbRatingsScraper;
 
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
-use Meltir\ImdbRatingsScraper\Exception\ScraperException;
-use Meltir\ImdbRatingsScraper\Interface\ItemInterface;
-use Meltir\ImdbRatingsScraper\Interface\ScraperInterface;
+use Meltir\ImdbRatingsScraper\Exception\Scraper as ScraperException;
+use Meltir\ImdbRatingsScraper\Interface\Scraper as ScraperInterface;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**
@@ -140,11 +139,9 @@ class Scraper implements ScraperInterface
      *
      * @param Crawler $item a movie and its rating
      *
-     * @return Item|false
-     *
      * @throws ScraperException
      */
-    private function processItem(Crawler $item): ItemInterface|false
+    private function processItem(Crawler $item): Item|false
     {
         try {
             $link = $item->filter(self::FILTER_RATING_LINK)->link()->getUri();

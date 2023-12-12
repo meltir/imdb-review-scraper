@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Meltir\ImdbRatingsScraper\Interface;
 
 use GuzzleHttp\ClientInterface;
-use Meltir\ImdbRatingsScraper\Exception\ScraperException;
+use Meltir\ImdbRatingsScraper\Exception\Scraper as ScraperException;
 
 /**
  * Interface for the review scraper.
  *
  * @see Scraper
  */
-interface ScraperInterface
+interface Scraper
 {
     /**
      * @param ClientInterface $client http client to use (guzzle)
@@ -27,7 +29,7 @@ interface ScraperInterface
     /**
      * Get all movies from all pages. This can timeout !
      *
-     * @return ItemInterface[]
+     * @return Item[]
      *
      * @throws ScraperException
      */
@@ -36,7 +38,7 @@ interface ScraperInterface
     /**
      * Process a single page of reviews.
      *
-     * @return ItemInterface[]
+     * @return Item[]
      *
      * @throws ScraperException
      */
