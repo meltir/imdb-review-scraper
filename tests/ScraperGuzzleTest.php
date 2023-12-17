@@ -1,6 +1,7 @@
 <?php
 /**
- * To run these tests:.
+ * These tests cover an example implementation with the symfony psr 18 implementation
+ * To run these tests:
  *
  * docker-compose up -d
  * docker-compose exec php ./vendor/bin/phpunit
@@ -17,13 +18,13 @@ use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\HttpFactory;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Meltir\ImdbRatingsScraper\Exception\Scraper as ScraperException;
+use Meltir\ImdbRatingsScraper\Exception\ScraperException;
 use Meltir\ImdbRatingsScraper\Item;
 use Meltir\ImdbRatingsScraper\Scraper;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestFactoryInterface;
 
-class ScraperTest extends TestCase
+class ScraperGuzzleTest extends TestCase
 {
     protected ClientInterface $client;
 
@@ -64,7 +65,7 @@ class ScraperTest extends TestCase
         if (is_null($responses)) {
             $responses = [$this->getSingleResponse()];
         }
-        $this->container = [];
+        $this->container = []; // @phpstan-ignore-line
         $history = Middleware::history($this->container);
         $mock = new MockHandler($responses);
         $handlerStack = HandlerStack::create($mock);
@@ -145,14 +146,14 @@ class ScraperTest extends TestCase
 
     public function testCrawlerException()
     {
-        $request = new Response(
+        $response = new Response(
             status: 200,
             headers: [],
             body: file_get_contents(
                 filename: __DIR__.DIRECTORY_SEPARATOR.'samples'.DIRECTORY_SEPARATOR.'imdb-response-broken.html'
             )
         );
-        $client = $this->getClient([$request]);
+        $client = $this->getClient([$response]);
         $scraper = new Scraper($client, $this->getRequestFactory(), 'foobar');
         $this->expectException(ScraperException::class);
         $this->expectExceptionCode(ScraperException::CODE_MAP['MOVIE_FAILED']);

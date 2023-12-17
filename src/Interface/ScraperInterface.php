@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Meltir\ImdbRatingsScraper\Interface;
 
-use Meltir\ImdbRatingsScraper\Exception\Scraper as ScraperException;
+use Meltir\ImdbRatingsScraper\Exception\ScraperException;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 
 /**
  * Interface for the review scraper.
  *
- * @see Scraper
+ * @see ScraperException
  */
-interface Scraper
+interface ScraperInterface
 {
     /**
      * @param ClientInterface         $client         psr18 http client to use
@@ -31,7 +31,7 @@ interface Scraper
     /**
      * Get all movies from all pages. This can timeout !
      *
-     * @return array<Item>
+     * @return array<ItemInterface>
      *
      * @throws ScraperException
      */
@@ -40,7 +40,7 @@ interface Scraper
     /**
      * Process a single page of reviews.
      *
-     * @return array<Item>
+     * @return array<ItemInterface>
      *
      * @throws ScraperException
      */

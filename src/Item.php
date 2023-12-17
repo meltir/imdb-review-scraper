@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Meltir\ImdbRatingsScraper;
 
-use Meltir\ImdbRatingsScraper\Interface\Item as ItemInterface;
+use Meltir\ImdbRatingsScraper\Interface\ItemInterface;
 
 /**
  * @infection-ignore-all
@@ -15,7 +15,7 @@ class Item implements ItemInterface
     {
     }
 
-    public function format(): Item
+    public function format(): ItemInterface
     {
         return $this;
     }

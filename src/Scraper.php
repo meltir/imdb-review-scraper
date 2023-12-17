@@ -35,8 +35,9 @@ declare(strict_types=1);
 
 namespace Meltir\ImdbRatingsScraper;
 
-use Meltir\ImdbRatingsScraper\Exception\Scraper as ScraperException;
-use Meltir\ImdbRatingsScraper\Interface\Scraper as ScraperInterface;
+use Meltir\ImdbRatingsScraper\Exception\ScraperException;
+use Meltir\ImdbRatingsScraper\Interface\ItemInterface;
+use Meltir\ImdbRatingsScraper\Interface\ScraperInterface;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -122,7 +123,7 @@ class Scraper implements ScraperInterface
     /**
      * Get all movies from all pages. This can timeout !
      *
-     * @return array<Item>
+     * @return array<ItemInterface>
      *
      * @throws ScraperException
      */
@@ -140,7 +141,7 @@ class Scraper implements ScraperInterface
     /**
      * Process a single page of reviews.
      *
-     * @return array<Item>
+     * @return array<ItemInterface>
      *
      * @throws ScraperException
      */
@@ -206,7 +207,7 @@ class Scraper implements ScraperInterface
      *
      * @throws ScraperException
      */
-    private function processItem(Crawler $item): Item|false
+    private function processItem(Crawler $item): ItemInterface|false
     {
         try {
             $link = $item->filter(self::FILTER_RATING_LINK)->link()->getUri();

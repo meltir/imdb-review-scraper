@@ -30,7 +30,7 @@
     "scripts": {
         "phpunit": [
             "Composer\\Config::disableProcessTimeout",
-            "./vendor/bin/phpunit"
+            "php -d xdebug.mode=none ./vendor/bin/phpunit"
         ],
 
         "phpstan" : [
@@ -52,11 +52,11 @@
 
         "phpinsights": [
             "Composer\\Config::disableProcessTimeout",
-            "./vendor/bin/phpinsights"
+            "php -d xdebug.mode=none ./vendor/bin/phpinsights"
         ],
 
         "ci-phpinsights": [
-            "@phpinsights --min-quality=95  --min-complexity=70 --min-architecture=80 --min-style=80"
+            "@phpinsights --min-quality=95  --min-complexity=70 --min-architecture=80 --min-style=80 -v -n"
         ],
 
         "ci-phpunit" : [
@@ -94,7 +94,7 @@
     },
     "minimum-stability": "stable",
     "require": {
-        "php": ">=8.0 >=8.2",
+        "php": ">=8.0 >=8.1 >=8.2 >=8.3",
         "symfony/dom-crawler": "5.4.* | 6.3.* | 7.0.*",
         "symfony/css-selector": "5.4.* | 6.4.* | 7.0.*",
         "psr/http-client": "^1.0",
@@ -108,7 +108,9 @@
         "mockery/mockery": "^1.6",
         "friendsofphp/php-cs-fixer": "^3.41",
         "phpstan/phpstan": "^1.10",
-        "nunomaduro/phpinsights": "^2."
+        "nunomaduro/phpinsights": "^2.",
+        "symfony/http-client-contracts": "^3.4",
+        "nyholm/psr7": "^1.8"
     },
     "config": {
         "allow-plugins": {
