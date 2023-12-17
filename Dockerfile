@@ -1,4 +1,4 @@
-FROM php:8.2-cli-alpine
+FROM php:8.3-cli-alpine
 
 LABEL maintainer="Lukasz Andrzejak"
 LABEL description="composer packager image"
@@ -22,6 +22,10 @@ RUN apk add icu-dev icu \
     && docker-php-ext-install intl \
     && apk del icu-dev
 
+RUN apk add oniguruma-dev \
+    && docker-php-ext-configure mbstring \
+    && docker-php-ext-install mbstring \
+    && apk del oniguruma-dev
 
 WORKDIR /var/www/html
 

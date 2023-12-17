@@ -1,10 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Meltir\ImdbRatingsScraper\Exception;
 
-use Exception;
-
-class Scraper extends \Exception
+class ScraperException extends \Exception
 {
     /**
      * This makes exception codes human-readable

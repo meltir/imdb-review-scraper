@@ -27,35 +27,30 @@ declare(strict_types=1);
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * @license this is mine and nobody has my permission to use it or republish it in parts or whole anywhere ever.
+ * @license this is mine and nobody has my permission to use it or
+ *          republish it in parts or whole anywhere ever.
  * @author Lukasz Andrzejak <spam@meltir.com>
  * @copyright (C) 2022 Lukasz Andrzejak <spam@meltir.com>
  */
 
 namespace Meltir\ImdbRatingsScraper;
 
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Exception\GuzzleException;
-use Meltir\ImdbRatingsScraper\Exception\Scraper as ScraperException;
-use Meltir\ImdbRatingsScraper\Interface\Scraper as ScraperInterface;
+use Meltir\ImdbRatingsScraper\Exception\ScraperException;
+use Meltir\ImdbRatingsScraper\Interface\ItemInterface;
+use Meltir\ImdbRatingsScraper\Interface\ScraperInterface;
+use Psr\Http\Client\ClientExceptionInterface;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * IMDB user review scraper
  * Only uses publicly available information from non-protected user pages.
+ *
+ * @todo isolate crawler into its own class, find the line between hydrating objects and adding useless complexity
  */
 class Scraper implements ScraperInterface
 {
-    /**
-     * @var string url currently scraped
-     */
-    protected string $url;
-
-    /**
-     * @var Crawler page currently parsed
-     */
-    protected Crawler $current_page;
-
     /**
      * Where the user profile lives on imdb.
      */
@@ -94,13 +89,25 @@ class Scraper implements ScraperInterface
 
     protected const REGEX_IMDB_ID = /* @lang RegExp */
         '@.*title/(.*)/.*@';
+    /**
+     * @var string url currently scraped
+     */
+    protected string $url;
 
     /**
-     * @param ClientInterface $client http client to use (guzzle)
+     * @var Crawler page currently parsed
+     */
+    protected Crawler $current_page;
+
+    /**
+     * @param ClientInterface $client http client to use
      * @param string          $user   imdb user id
      */
-    public function __construct(protected ClientInterface $client, protected string $user)
-    {
+    public function __construct(
+        protected ClientInterface $client,
+        protected RequestFactoryInterface $requestFactory,
+        protected string $user
+    ) {
         $this->url = self::IMDB_RATINGS_URI_PREFIX.$user.self::IMDB_RATINGS_URI_SUFFIX;
     }
 
@@ -114,58 +121,9 @@ class Scraper implements ScraperInterface
     }
 
     /**
-     * Fetch page via a http client and return out a web crawler that parsed it.
-     *
-     * @throws ScraperException
-     */
-    private function getUrl(): Crawler
-    {
-        try {
-            return new Crawler(
-                node: $this
-                    ->client
-                    ->request('GET', $this->url)
-                    ->getBody()
-                    ->getContents(),
-                uri: self::IMDB_BASE_URI
-            );
-        } catch (GuzzleException $e) {
-            throw new ScraperException(message: 'Could not connect to imdb', code: ScraperException::CODE_MAP['COULD_NOT_CONNECT'], previous: $e);
-        }
-    }
-
-    /**
-     * Process an individual entry.
-     *
-     * @param Crawler $item a movie and its rating
-     *
-     * @throws ScraperException
-     */
-    private function processItem(Crawler $item): Item|false
-    {
-        try {
-            $link = $item->filter(self::FILTER_RATING_LINK)->link()->getUri();
-            try {
-                $id = (string) preg_replace(self::REGEX_IMDB_ID, '\\1', $link);
-                $movie = new Item(
-                    imdb_id: $id,
-                    rating: (int) $item->filter(self::FILTER_RATING_ITEM)->text(),
-                    reviewer: $this->user
-                );
-            } catch (\InvalidArgumentException $e) {
-                throw new ScraperException(message: 'Could not scrape this movie', code: ScraperException::CODE_MAP['MOVIE_FAILED'], previous: $e);
-            }
-        } catch (\InvalidArgumentException $e) {
-            return false;
-        }
-
-        return $movie;
-    }
-
-    /**
      * Get all movies from all pages. This can timeout !
      *
-     * @return Item[]
+     * @return array<ItemInterface>
      *
      * @throws ScraperException
      */
@@ -183,7 +141,7 @@ class Scraper implements ScraperInterface
     /**
      * Process a single page of reviews.
      *
-     * @return Item[]
+     * @return array<ItemInterface>
      *
      * @throws ScraperException
      */
@@ -221,5 +179,52 @@ class Scraper implements ScraperInterface
         } catch (\InvalidArgumentException $e) {
             return false;
         }
+    }
+
+    /**
+     * Fetch page via a http client and return out a web crawler that parsed it.
+     *
+     * @throws ScraperException
+     */
+    private function getUrl(): Crawler
+    {
+        try {
+            $request = $this->requestFactory->createRequest('GET', $this->url);
+
+            return new Crawler(
+                node: $this->client->sendRequest($request)->getBody()->getContents(),
+                uri: self::IMDB_BASE_URI
+            );
+        } catch (ClientExceptionInterface $e) {
+            throw new ScraperException(message: 'Could not connect to imdb', code: ScraperException::CODE_MAP['COULD_NOT_CONNECT'], previous: $e);
+        }
+    }
+
+    /**
+     * Process an individual entry.
+     *
+     * @param Crawler $item a movie and its rating
+     *
+     * @throws ScraperException
+     */
+    private function processItem(Crawler $item): ItemInterface|false
+    {
+        try {
+            $link = $item->filter(self::FILTER_RATING_LINK)->link()->getUri();
+            try {
+                $id = (string) preg_replace(self::REGEX_IMDB_ID, '\\1', $link);
+                $movie = new Item(
+                    imdb_id: $id,
+                    rating: (int) $item->filter(self::FILTER_RATING_ITEM)->text(),
+                    reviewer: $this->user
+                );
+            } catch (\InvalidArgumentException $e) {
+                throw new ScraperException(message: 'Could not scrape this movie', code: ScraperException::CODE_MAP['MOVIE_FAILED'], previous: $e);
+            }
+        } catch (\InvalidArgumentException $e) {
+            return false;
+        }
+
+        return $movie;
     }
 }
