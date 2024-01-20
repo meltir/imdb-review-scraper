@@ -61,16 +61,16 @@ return [
 
     'remove' => [
         // this is a library, has to be extendable
-        \NunoMaduro\PhpInsights\Domain\Insights\ForbiddenNormalClasses::class,
+        NunoMaduro\PhpInsights\Domain\Insights\ForbiddenNormalClasses::class,
         // i like things explicit and without aliases
-        \SlevomatCodingStandard\Sniffs\Classes\SuperfluousInterfaceNamingSniff::class,
-        \SlevomatCodingStandard\Sniffs\Classes\SuperfluousExceptionNamingSniff::class,
+        SlevomatCodingStandard\Sniffs\Classes\SuperfluousInterfaceNamingSniff::class,
+        SlevomatCodingStandard\Sniffs\Classes\SuperfluousExceptionNamingSniff::class,
         // let phpcsfixer handle this one
-        \SlevomatCodingStandard\Sniffs\Commenting\DocCommentSpacingSniff::class,
+        SlevomatCodingStandard\Sniffs\Commenting\DocCommentSpacingSniff::class,
     ],
 
     'config' => [
-        \PHP_CodeSniffer\Standards\Generic\Sniffs\Files\LineLengthSniff::class => [
+        PHP_CodeSniffer\Standards\Generic\Sniffs\Files\LineLengthSniff::class => [
             'lineLimit' => 120,
             'absoluteLineLimit' => 160,
         ],
