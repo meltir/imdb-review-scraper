@@ -54,40 +54,40 @@ class Scraper implements ScraperInterface
     /**
      * Where the user profile lives on imdb.
      */
-    protected const IMDB_RATINGS_URI_PREFIX = 'https://www.imdb.com/user/';
+    protected const string IMDB_RATINGS_URI_PREFIX = 'https://www.imdb.com/user/';
 
     /**
      * Where the user ratings live in a users profile.
      */
-    protected const IMDB_RATINGS_URI_SUFFIX = '/ratings';
+    protected const string IMDB_RATINGS_URI_SUFFIX = '/ratings';
 
     /**
      * Where the base url is for parsing urls.
      */
-    protected const IMDB_BASE_URI = 'https://www.imdb.com';
+    protected const string IMDB_BASE_URI = 'https://www.imdb.com';
 
     /**
      * Css selector to find the next page link.
      */
-    protected const FILTER_NEXT_PAGE = /* @lang CSS */
+    protected const string FILTER_NEXT_PAGE = /* @lang CSS */
         '#ratings-container > div.footer.filmosearch > div > div > a.flat-button.lister-page-next.next-page';
 
     /**
      * Css selector to find an individual movie rating.
      */
-    protected const FILTER_RATING_ITEM = /* @lang CSS */
+    protected const string FILTER_RATING_ITEM = /* @lang CSS */
         'div.ipl-rating-star.ipl-rating-star--other-user.small > span.ipl-rating-star__rating';
 
     /**
      * Css selector to find the ratings list.
      */
-    protected const FILTER_RATING_CONTAINER = /* @lang CSS */
+    protected const string FILTER_RATING_CONTAINER = /* @lang CSS */
         '#ratings-container > div.lister-item';
 
-    protected const FILTER_RATING_LINK = /* @lang CSS */
+    protected const string FILTER_RATING_LINK = /* @lang CSS */
         'h3 > a';
 
-    protected const REGEX_IMDB_ID = /* @lang RegExp */
+    protected const string REGEX_IMDB_ID = /* @lang RegExp */
         '@.*title/(.*)/.*@';
     /**
      * @var string url currently scraped
@@ -95,7 +95,7 @@ class Scraper implements ScraperInterface
     protected string $url;
 
     /**
-     * @var Crawler page currently parsed
+     * @var ImdbCrawler page currently parsed
      */
     protected Crawler $current_page;
 
@@ -203,7 +203,7 @@ class Scraper implements ScraperInterface
     /**
      * Process an individual entry.
      *
-     * @param Crawler $item a movie and its rating
+     * @param ImdbCrawler $item a movie and its rating
      *
      * @throws ScraperException
      */
