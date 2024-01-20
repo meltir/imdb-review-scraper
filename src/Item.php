@@ -6,6 +6,7 @@ namespace Meltir\ImdbRatingsScraper;
 
 use Meltir\ImdbRatingsScraper\Interface\ItemInterface;
 
+// test test test
 /**
  * @infection-ignore-all
  */

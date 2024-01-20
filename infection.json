@@ -9,6 +9,9 @@
         "text": "infection.log",
         "html": "infection.html"
     },
+    "ignoreMsiWithNoMutations": true,
+    "minMsi": 95,
+    "minCoveredMsi": 95,
     "mutators": {
         "@default": true,
         "@unwrap": false,

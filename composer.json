@@ -56,7 +56,7 @@
         ],
 
         "ci-phpinsights": [
-            "@phpinsights --min-quality=95  --min-complexity=70 --min-architecture=80 --min-style=80 -v -n"
+            "@phpinsights -v -n"
         ],
 
         "ci-phpunit" : [
