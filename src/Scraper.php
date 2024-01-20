@@ -196,7 +196,11 @@ class Scraper implements ScraperInterface
                 uri: self::IMDB_BASE_URI
             );
         } catch (ClientExceptionInterface $e) {
-            throw new ScraperException(message: 'Could not connect to imdb', code: ScraperException::CODE_MAP['COULD_NOT_CONNECT'], previous: $e);
+            throw new ScraperException(
+                message: 'Could not connect to imdb',
+                code: ScraperException::CODE_MAP['COULD_NOT_CONNECT'],
+                previous: $e
+            );
         }
     }
 
@@ -219,7 +223,11 @@ class Scraper implements ScraperInterface
                     reviewer: $this->user
                 );
             } catch (\InvalidArgumentException $e) {
-                throw new ScraperException(message: 'Could not scrape this movie', code: ScraperException::CODE_MAP['MOVIE_FAILED'], previous: $e);
+                throw new ScraperException(
+                    message: 'Could not scrape this movie',
+                    code: ScraperException::CODE_MAP['MOVIE_FAILED'],
+                    previous: $e
+                );
             }
         } catch (\InvalidArgumentException $e) {
             return false;
