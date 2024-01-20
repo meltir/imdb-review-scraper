@@ -14,20 +14,24 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       checks: write
+    strategy:
+      matrix:
+        version: [ 8.1, 8.2, 8.3 ]
     steps:
       - uses: actions/checkout@v3
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: ${{ matrix.version }}
 
       - name: Cache hash
         id: get-cache-hash
         run: |
           COMPOSER_HASH=`cat composer.json | sha256sum | head -c 40`
           DATE=`date -u "+%Y%m%d"`
-          echo "hash=$COMPOSER_HASH$DATE" >> "$GITHUB_OUTPUT"
+          VERSION="${{ matrix.version }}"
+          echo "hash=$COMPOSER_HASH$DATE$VERSION" >> "$GITHUB_OUTPUT"
         shell: bash
 
       - name: Cache Composer dependencies
