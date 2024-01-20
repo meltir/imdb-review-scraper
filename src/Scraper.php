@@ -30,7 +30,7 @@ declare(strict_types=1);
  * @license this is mine and nobody has my permission to use it or
  *          republish it in parts or whole anywhere ever.
  * @author Lukasz Andrzejak <spam@meltir.com>
- * @copyright (C) 2022 Lukasz Andrzejak <spam@meltir.com>
+ * @copyright (C) 2024 Lukasz Andrzejak <spam@meltir.com>
  */
 
 namespace Meltir\ImdbRatingsScraper;
