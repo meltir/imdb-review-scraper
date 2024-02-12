@@ -45,7 +45,7 @@ class ScraperSymfonyTest extends TestCase
         return new Psr17Factory();
     }
 
-    private function getClient(array $responses = null): ClientInterface
+    private function getClient(?array $responses = null): ClientInterface
     {
         if (is_null($responses)) {
             $responseBody = (string) file_get_contents(__DIR__.DIRECTORY_SEPARATOR.'samples'.DIRECTORY_SEPARATOR.'imdb-response.html');
