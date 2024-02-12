@@ -60,7 +60,7 @@ class ScraperGuzzleTest extends TestCase
         return new HttpFactory();
     }
 
-    private function getClient(array $responses = null): Client
+    private function getClient(?array $responses = null): Client
     {
         if (is_null($responses)) {
             $responses = [$this->getSingleResponse()];
