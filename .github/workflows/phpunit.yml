@@ -56,6 +56,12 @@ jobs:
           path: ./phpunit-log.xml
           reporter: java-junit
 
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        env:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: meltir/imdb-review-scraper
+
       - name: Cache Composer dependencies
         uses: actions/cache@v3
         with:
