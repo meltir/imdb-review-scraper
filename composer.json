@@ -60,7 +60,7 @@
         ],
 
         "ci-phpunit" : [
-            "@phpunit --log-junit=./phpunit-log.xml"
+            "@phpunit --log-junit=./phpunit-log.xml --coverage-clover=./coverage.xml"
         ],
 
         "ci-infection": [
