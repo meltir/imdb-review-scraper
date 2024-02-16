@@ -46,6 +46,8 @@ jobs:
         run: composer install --prefer-dist --no-progress
 
       - name: Run phpunit tests
+        env:
+          XDEBUG_MODE: coverage
         run: composer ci-phpunit
 
       - name: Test Report
@@ -55,6 +57,13 @@ jobs:
           name: PHPUnit report
           path: ./phpunit-log.xml
           reporter: java-junit
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.xml
+          verbose: true
 
       - name: Cache Composer dependencies
         uses: actions/cache@v3
