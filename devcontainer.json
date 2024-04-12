@@ -1,0 +1,10 @@
+{
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "php",
+  "workspaceFolder": "/var/www/html/",
+  "onCreateCommand": {
+    "update": "apk update",
+    "installDependencies": "apk add unzip curl libxext libxrender libxtst libxi freetype procps gcompat git"
+  },
+  "postStartCommand": "git config --global --add safe.directory /var/www/html"
+}
