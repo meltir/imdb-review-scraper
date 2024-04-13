@@ -4,7 +4,11 @@
   "workspaceFolder": "/var/www/html/",
   "onCreateCommand": {
     "update": "apk update",
-    "installDependencies": "apk add unzip curl libxext libxrender libxtst libxi freetype procps gcompat git"
+    "installDependencies": "apk add unzip curl libxext libxrender libxtst libxi freetype procps gcompat git gpg bash openssh"
   },
+  "mounts": [
+    "source=${localEnv:USERPROFILE}/.gnupg,target=/root/.gnupg,type=bind",
+    "source=${localEnv:USERPROFILE}/.ssh,target=/root/.ssh,type=bind"
+  ],
   "postStartCommand": "git config --global --add safe.directory /var/www/html"
 }
