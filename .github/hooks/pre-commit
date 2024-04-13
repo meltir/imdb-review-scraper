@@ -9,7 +9,7 @@ then
     echo "No php files found in commit."
 else
     echo "composer php-cs-fixer"
-    MSYS_NO_PATHCONV=1 docker-compose run -T --rm php /usr/bin/composer php-cs-fixer ${FILES}
+    MSYS_NO_PATHCONV=1 composer php-cs-fixer ${FILES}
     if [ $? -ne 0 ];
     then
       echo "Failed php-cs-fixer check"
@@ -18,13 +18,13 @@ else
 fi
 
 # ignore tests and database folders from phpstan checks
-FILES=`git diff --cached --name-only --diff-filter=ACM | grep -e '.php$' | sed -e '/^tests/d' | tr '\n' ' '`
+FILES=`git diff --cached --name-only --diff-filter=ACM | grep -e '.php$' | sed -e '/^tests/d' -r -e '/^(\.?)php.*/d' | tr '\n' ' '`
 if [ -z "$FILES" ]
 then
     echo "No php files to check against phpstan."
 else
     echo "composer phpstan"
-    MSYS_NO_PATHCONV=1 docker-compose run -T --rm php /usr/bin/composer phpstan ${FILES}
+    MSYS_NO_PATHCONV=1 composer phpstan ${FILES}
     if [ $? -ne 0 ];
     then
       echo "Failed phpstan check"

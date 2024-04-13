@@ -50,7 +50,7 @@ return [
     */
 
     'exclude' => [
-    //  'path/to/directory-or-file'
+        'phpinsights.php',
     ],
 
     'add' => [
@@ -95,7 +95,7 @@ return [
         'min-complexity' => 70,
         'min-architecture' => 95,
         'min-style' => 95,
-//        'disable-security-check' => false,
+        //        'disable-security-check' => false,
     ],
 
     /*
