@@ -1,10 +1,18 @@
 {
   "image": "mcr.microsoft.com/devcontainers/php:8.3",
   "workspaceFolder": "/var/www/html/",
+  "containerEnv": {
+    "DEBIAN_FRONTEND": "noninteractive"
+  },
   "onCreateCommand": {
     "update": "apt update",
-    "installDependenciesIntl": "apt install libicu-dev",
+    "installDependenciesIntl": "apt install -yq --no-install-recommends libicu-dev",
     "installIntl": "docker-php-ext-install intl",
   },
-  "postStartCommand": "git config --global --add safe.directory /var/www/html"
+  "postStartCommand": "git config --global --add safe.directory /var/www/html",
+  "customizations" : {
+    "jetbrains" : {
+      "backend" : "PhpStorm"
+    }
+  }
 }
