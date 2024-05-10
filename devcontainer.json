@@ -1,14 +1,10 @@
 {
-  "dockerComposeFile": "docker-compose.yml",
-  "service": "php",
+  "image": "mcr.microsoft.com/devcontainers/php:8.3",
   "workspaceFolder": "/var/www/html/",
   "onCreateCommand": {
-    "update": "apk update",
-    "installDependencies": "apk add unzip curl libxext libxrender libxtst libxi freetype procps gcompat git gpg bash openssh"
+    "update": "apt update",
+    "installDependenciesIntl": "apt install libicu-dev",
+    "installIntl": "docker-php-ext-install intl",
   },
-  "mounts": [
-    "source=${localEnv:USERPROFILE}/.gnupg,target=/root/.gnupg,type=bind",
-    "source=${localEnv:USERPROFILE}/.ssh,target=/root/.ssh,type=bind"
-  ],
   "postStartCommand": "git config --global --add safe.directory /var/www/html"
 }
